@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
+ * 25.07.09          eunchang           변경된 ResponseDTO 반영<br>
  */
 
 public class SuccessResponseDTOTest {
