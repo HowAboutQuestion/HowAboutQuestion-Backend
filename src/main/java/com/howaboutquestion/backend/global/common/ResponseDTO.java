@@ -14,12 +14,12 @@ import lombok.RequiredArgsConstructor;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
- * 25.07.09          eunchang           클래스명 수정<br>
+ * 25.07.09          eunchang           클래스명 수정 및 추상 클래스 전환<br>
  * <br>
  */
 @Getter
 @AllArgsConstructor
-public class ResponseDTO {
+public abstract class ResponseDTO {
     private boolean success;
     private int httpCode;
     private String httpStatus;
