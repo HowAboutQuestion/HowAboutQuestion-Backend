@@ -39,7 +39,7 @@ public class FilterErrorHandler extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             filterChain.doFilter(request, response);
-        } catch (Error e) {
+        } catch (CustomException e) {
             setErrorResponse(response, e.getErrorCode());
         } catch (Exception e){
             setErrorResponse(response, StatusCode.INTERNAL_SERVER_ERROR);
@@ -55,7 +55,7 @@ public class FilterErrorHandler extends OncePerRequestFilter {
     private void setErrorResponse(HttpServletResponse response, StatusCode errorCode) throws IOException {
         response.setStatus(errorCode.getStatus().value());
         response.setContentType("application/json; charset=UTF-8");
-        ErrorResponse errorBody = ErrorResponse.create(errorCode);
+        FailureResponseDTO errorBody = FailureResponseDTO.create(errorCode);
         response.getWriter().write(objectMapper.writeValueAsString(errorBody));
     }
 

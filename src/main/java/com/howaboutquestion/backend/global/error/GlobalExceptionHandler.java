@@ -31,7 +31,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
      * 검증 실패가 발생했을 때 호출됩니다.
      * @param e 발생한 예외
      * @param request 요청 정보
-     * @return NVALID_PARAMETER 상태의 Error 응답
+     * @return NVALID_PARAMETER 상태의 CustomException 응답
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> validationError(ConstraintViolationException e, WebRequest request) {
@@ -42,10 +42,10 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
      * 비즈니스 로직에서 던진 GeneralError 예외를 처리합니다.
      * @param e 발생한 GeneralError
      * @param request 요청 정보
-     * @return 예외에 매핑된 StatusCode를 사용한 Error 응답
+     * @return 예외에 매핑된 StatusCode를 사용한 CustomException 응답
      */
-    @ExceptionHandler(Error.class)
-    public ResponseEntity<Object> generalError(Error e, WebRequest request){
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Object> generalError(CustomException e, WebRequest request){
         return handleExceptionInternal(e, e.getErrorCode(), request);
     }
 
@@ -53,7 +53,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
      * 선언된 예외를 제외한 모든 예외를 INTERNAL_SERVER_ERROR로 처리합니다.
      * @param e 발생한 예외
      * @param request 요청 정보
-     * @return INTERNAL_SERVER_ERROR 상태의 Error 응답
+     * @return INTERNAL_SERVER_ERROR 상태의 CustomException 응답
      */
     @ExceptionHandler(HttpClientErrorException.Forbidden.class)
     public ResponseEntity<Object> forbiddenError(Exception e, WebRequest request){
@@ -64,7 +64,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
      * 선언된 예외를 제외한 모든 예외를 INTERNAL_SERVER_ERROR로 처리합니다.
      * @param e 발생한 예외
      * @param request 요청 정보
-     * @return INTERNAL_SERVER_ERROR 상태의 Error 응답
+     * @return INTERNAL_SERVER_ERROR 상태의 CustomException 응답
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> exception(Exception e, WebRequest request){
@@ -85,13 +85,13 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
      * ErrorCode와 함께 에러 응답을 구성하는 ErrorResponse를 담은 ResponseEntity를 반환하는 헬퍼 메서드입니다.
      */
     private ResponseEntity<Object> handleExceptionInternal(Exception e, StatusCode errorCode, WebRequest request){
-        return handleExceptionInternal(e, ErrorResponse.create(errorCode,errorCode.getMessage(e)), HttpHeaders.EMPTY, errorCode.getStatus(), request);
+        return handleExceptionInternal(e, FailureResponseDTO.create(errorCode,errorCode.getMessage(e)), HttpHeaders.EMPTY, errorCode.getStatus(), request);
     }
 
     /**
      * Spring의 기본 처리 메서드를 호출하여 ErrorResponse를 담은 ResponseEntity를 반환합니다.
      */
     private ResponseEntity<Object> handleExceptionInternal(Exception e, StatusCode errorCode, HttpHeaders headers, HttpStatus status, WebRequest request){
-        return super.handleExceptionInternal(e, ErrorResponse.create(errorCode,errorCode.getMessage(e)), headers, status, request);
+        return super.handleExceptionInternal(e, FailureResponseDTO.create(errorCode,errorCode.getMessage(e)), headers, status, request);
     }
 }
