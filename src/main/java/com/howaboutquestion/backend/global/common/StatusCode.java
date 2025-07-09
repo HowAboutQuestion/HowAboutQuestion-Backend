@@ -1,7 +1,6 @@
 package com.howaboutquestion.backend.global.common;
 
-import com.howaboutquestion.backend.global.error.Error;
-import jakarta.annotation.Nullable;
+import com.howaboutquestion.backend.global.error.CustomException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import java.util.Objects;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
+ * 25.07.09          eunchang           getMessage 메서드 삭제<br>
  */
 
 @Getter
@@ -36,27 +36,13 @@ public enum StatusCode {
     private final String code;
     private final String message;
 
-    public String getMessage(Throwable e){
-        return this.getMessage(this.getMessage() + " - " + e.getMessage());
-    }
-
     /**
-     *
-     * @param message
-     * @return
-     */   public String getMessage(String message) {
-        if(Objects.nonNull(message) && !message.isBlank()) return message;
-        return this.getMessage();
-    }
-
-
-    /**
-     *
-     * @param httpStatus
-     * @return
+     * HttpStatus에 매핑되는 StatusCode를 반환합니다.
+     * @param httpStatus HttpStatus 객체
+     * @return 매핑된 StatusCode
      */
     public static StatusCode valueOf(HttpStatus httpStatus){
-        if(Objects.isNull(httpStatus)) throw new Error("상태를 가져오는 중 문제가 발생하였습니다.");
+        if(Objects.isNull(httpStatus)) throw new CustomException("상태를 가져오는 중 문제가 발생하였습니다.");
 
         for(StatusCode code : values()){
             if(code.getStatus() == httpStatus) return code;
@@ -66,4 +52,5 @@ public enum StatusCode {
         else if(httpStatus.is5xxServerError()) return StatusCode.INTERNAL_SERVER_ERROR;
         else return StatusCode.SUCCESS;
     }
+
 }

@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 /**
  * packageName    : com.howaboutquestion.backend.global.error<br>
- * fileName       : FilterErrorHandler.java<br>
+ * fileName       : FilterExceptionHandler.java<br>
  * author         : eunchang<br>
  * date           : 2025-07-04<br>
  * description    : 요청 처리 중 발생하는 예외를 가로채 공통 에러 응답을 반환하는 클래스 입니다.<br>
@@ -21,10 +21,11 @@ import java.io.IOException;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
+ * 25.07.09          eunchang           클래스명 수정<br>
  */
 @Component
 @RequiredArgsConstructor
-public class FilterErrorHandler extends OncePerRequestFilter {
+public class FilterExceptionHandler extends OncePerRequestFilter {
     ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -55,7 +56,7 @@ public class FilterErrorHandler extends OncePerRequestFilter {
     private void setErrorResponse(HttpServletResponse response, StatusCode errorCode) throws IOException {
         response.setStatus(errorCode.getStatus().value());
         response.setContentType("application/json; charset=UTF-8");
-        FailureResponseDTO errorBody = FailureResponseDTO.create(errorCode);
+        FailureResponseDTO errorBody = new FailureResponseDTO(errorCode);
         response.getWriter().write(objectMapper.writeValueAsString(errorBody));
     }
 

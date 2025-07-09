@@ -13,19 +13,22 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Objects;
+
 /**
  * packageName    : com.howaboutquestion.backend.global.error<br>
- * fileName       : GlobalErrorHandler.java<br>
+ * fileName       : GlobalExceptionHandler.java<br>
  * author         : eunchang<br>
  * date           : 2025-07-04<br>
- * description    :  전역에서 발생한 예외를 처리하는 GlobalErrorHandler 클래스입니다.<br>
+ * description    :  전역에서 발생한 예외를 처리하는 GlobalExceptionHandler 클래스입니다.<br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
+ * 25.07.09          eunchang           클래스명 수정 및 메서드 수정<br>
  */
 @RestControllerAdvice(annotations = {RestController.class})
-public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * 검증 실패가 발생했을 때 호출됩니다.
@@ -85,13 +88,31 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
      * ErrorCode와 함께 에러 응답을 구성하는 ErrorResponse를 담은 ResponseEntity를 반환하는 헬퍼 메서드입니다.
      */
     private ResponseEntity<Object> handleExceptionInternal(Exception e, StatusCode errorCode, WebRequest request){
-        return handleExceptionInternal(e, FailureResponseDTO.create(errorCode,errorCode.getMessage(e)), HttpHeaders.EMPTY, errorCode.getStatus(), request);
+        return handleExceptionInternal(e, new FailureResponseDTO(errorCode, buildErrorMessage(errorCode, e)), HttpHeaders.EMPTY, errorCode.getStatus(), request);
     }
 
     /**
      * Spring의 기본 처리 메서드를 호출하여 ErrorResponse를 담은 ResponseEntity를 반환합니다.
      */
     private ResponseEntity<Object> handleExceptionInternal(Exception e, StatusCode errorCode, HttpHeaders headers, HttpStatus status, WebRequest request){
-        return super.handleExceptionInternal(e, FailureResponseDTO.create(errorCode,errorCode.getMessage(e)), headers, status, request);
+        return super.handleExceptionInternal(e, new FailureResponseDTO(errorCode, buildErrorMessage(errorCode, e)), headers, status, request);
+    }
+
+    /**
+     * 커스텀 메세지 및 Exception 메세지를 같이 출력하는 메서드 입니다.
+     * @param errorCode 사용자가 정의한 Excepiton 정보
+     * @param e Exception 메세지
+     * @return Exception 메세지
+     */
+    private String buildErrorMessage(StatusCode errorCode, Exception e){
+        String customErrorMessage = errorCode.getMessage();
+        String exceptionMessage = e.getMessage();
+
+        if (e instanceof CustomException ||
+                exceptionMessage == null || exceptionMessage.isBlank() ||
+                customErrorMessage.equals(exceptionMessage)) {
+            return customErrorMessage;
+        }
+        return customErrorMessage + " - " + exceptionMessage;
     }
 }
