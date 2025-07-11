@@ -26,8 +26,8 @@ public final class FailureResponseDTO extends ResponseDTO {
      * 반환할 ErrorCode와 함께 FailureResponseDTO 객체를 생성합니다.
      * @param errorCode 에러 상태 코드
      */
-    public FailureResponseDTO(StatusCode errorCode) {
-        super(false, errorCode.getStatus().value(), errorCode.getStatus().name(), errorCode.getCode(), errorCode.getMessage());
+    private FailureResponseDTO(StatusCode errorCode) {
+        super(false, errorCode);
     }
 
 
@@ -36,7 +36,25 @@ public final class FailureResponseDTO extends ResponseDTO {
      * @param errorCode 에러 상태 코드
      * @param message 작성한 메시지
      */
-    public FailureResponseDTO(StatusCode errorCode, String message) {
-        super(false,  errorCode.getStatus().value(), errorCode.getStatus().name(), errorCode.getCode(), message);
+    private FailureResponseDTO(StatusCode errorCode, String message) {
+        super(false,  errorCode, message);
+    }
+
+    /**
+     * 반환할 ErrorCode와 작성한 메시지와 함께 FailureResponseDTO 객체를 생성하고 반환합니다.
+     * @param errorCode 에러 상태 코드
+     * @param message 작성한 메시지
+     */
+    public static FailureResponseDTO create (StatusCode errorCode){
+        return new FailureResponseDTO(errorCode);
+    }
+
+    /**
+     * 반환할 ErrorCode와 작성한 메시지와 함께 FailureResponseDTO 객체를 생성하고 반환합니다.
+     * @param errorCode 에러 상태 코드
+     * @param message 작성한 메시지
+     */
+    public static FailureResponseDTO create (StatusCode errorCode,String message){
+        return new FailureResponseDTO(errorCode, message);
     }
 }

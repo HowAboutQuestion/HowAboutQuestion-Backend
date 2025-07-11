@@ -27,8 +27,8 @@ public final class SuccessResponseDTO<T> extends ResponseDTO {
      * 응답 데이터를 형식에 맞춰서 반환할 SuccessResponseDTO 클래스 생성자
      * @param data 응답 데이터
      */
-    public SuccessResponseDTO(T data) {
-        super(true, StatusCode.SUCCESS.getStatus().value(), StatusCode.SUCCESS.getStatus().name(), StatusCode.SUCCESS.getCode(), StatusCode.SUCCESS.getMessage());
+    private SuccessResponseDTO(T data) {
+        super(true, StatusCode.SUCCESS);
         this.data = data;
     }
 
@@ -37,9 +37,31 @@ public final class SuccessResponseDTO<T> extends ResponseDTO {
      * @param data 응답 데이터
      * @param message 커스텀 메시지
      */
-    public SuccessResponseDTO(T data, String message) {
-        super(true, StatusCode.SUCCESS.getStatus().value(), StatusCode.SUCCESS.name(), StatusCode.SUCCESS.getCode(), message);
+    private SuccessResponseDTO(T data, String message) {
+        super(true, StatusCode.SUCCESS, message);
         this.data = data;
     }
+
+    /**
+     * 응답 데이터를 커스텀한 메시지와 함께 반환할 Reponse 클래스 생성하고 반환 합니다.
+     * @param data 응답 데이터
+     * @param message 커스텀 메시지
+     */
+    public static <T> SuccessResponseDTO<T> create (T data){
+        return new SuccessResponseDTO(data);
+    }
+
+    /**
+     * 응답 데이터를 커스텀한 메시지와 함께 반환할 Reponse 클래스 생성하고 반환 합니다.
+     * @param data 응답 데이터
+     * @param message 커스텀 메시지
+     */
+    public static <T> SuccessResponseDTO<T> create (T data, String message){
+        return new SuccessResponseDTO(data, message);
+    }
+
+
+
+
 
 }
