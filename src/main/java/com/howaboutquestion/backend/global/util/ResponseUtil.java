@@ -6,7 +6,12 @@ import com.howaboutquestion.backend.global.response.SuccessResponseDTO;
 import org.springframework.http.ResponseEntity;
 
 public final class ResponseUtil {
-
+    /**
+     * 객체 생성을 방지합니다.
+     */
+    private ResponseUtil() {
+        throw new UnsupportedOperationException("Utility 클래스는 생성할 수 없습니다.");
+    }
 
     /**
      * 요청에 맞는 응답 데이터를 200 OK와 함께 반환합니다.
@@ -15,7 +20,7 @@ public final class ResponseUtil {
      * @param <T> 응답 데이터 타입
      */
     public static <T> ResponseEntity<SuccessResponseDTO<T>> success (T data){
-        return ResponseEntity.ok(new SuccessResponseDTO<>(data));
+        return ResponseEntity.ok(SuccessResponseDTO.create(data));
     }
 
     /**
@@ -26,7 +31,7 @@ public final class ResponseUtil {
      * @param <T> 응답 데이터 타입
      */
     public static <T> ResponseEntity<SuccessResponseDTO<T>> success (T data, String message){
-        return ResponseEntity.ok(new SuccessResponseDTO<>(data, message));
+        return ResponseEntity.ok(SuccessResponseDTO.create(data, message));
     }
 
     /**
@@ -35,7 +40,7 @@ public final class ResponseUtil {
      * @return 실패 응답 객체
      */
     public static ResponseEntity<FailureResponseDTO> failure(StatusCode errorCode) {
-        return ResponseEntity.status(errorCode.getStatus()).body(new FailureResponseDTO(errorCode));
+        return ResponseEntity.status(errorCode.getStatus()).body(FailureResponseDTO.create(errorCode));
     }
 
     /**
@@ -45,6 +50,6 @@ public final class ResponseUtil {
      * @return 실패 응답 객체
      */
     public static ResponseEntity<FailureResponseDTO> failure(StatusCode errorCode, String message) {
-        return ResponseEntity.status(errorCode.getStatus()).body(new FailureResponseDTO(errorCode, message));
+        return ResponseEntity.status(errorCode.getStatus()).body(FailureResponseDTO.create(errorCode, message));
     }
 }
