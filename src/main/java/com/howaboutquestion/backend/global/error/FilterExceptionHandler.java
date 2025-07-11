@@ -22,6 +22,7 @@ import java.io.IOException;
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
  * 25.07.09          eunchang           클래스명 수정<br>
+ * 25.07.11          eunchang           각 클래스의 생성자 호출 함수 적용<br>
  */
 @Component
 @RequiredArgsConstructor

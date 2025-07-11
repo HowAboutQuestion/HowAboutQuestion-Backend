@@ -1,9 +1,23 @@
 package com.howaboutquestion.backend.global.util;
 
+import com.howaboutquestion.backend.global.common.ResponseDTO;
 import com.howaboutquestion.backend.global.common.StatusCode;
 import com.howaboutquestion.backend.global.error.FailureResponseDTO;
 import com.howaboutquestion.backend.global.response.SuccessResponseDTO;
 import org.springframework.http.ResponseEntity;
+
+/**
+ * packageName    : com.howaboutquestion.backend.global.util;<br>
+ * fileName       : ResponseUtil.java<br>
+ * author         : eunchang <br>
+ * date           : 2025-07-09<br>
+ * description    : ResponseDTO를 다루는 ResponseUtil 클래스입니다. <br>
+ * ===========================================================<br>
+ * DATE              AUTHOR             NOTE<br>
+ * -----------------------------------------------------------<br>
+ * 25.07.09          eunchang           최초생성<br>
+ * 25.07.11          eunchang           create 함수를 사용해 생성자 호출<br
+ */
 
 public final class ResponseUtil {
     /**

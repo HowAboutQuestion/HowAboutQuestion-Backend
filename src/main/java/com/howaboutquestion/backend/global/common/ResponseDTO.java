@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
  * 25.07.09          eunchang           클래스명 수정 및 추상 클래스 전환<br>
+ * 25.07.11          eunchang           생성자 추가<br>
  * <br>
  */
 @Getter

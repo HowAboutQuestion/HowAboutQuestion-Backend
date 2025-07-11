@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.*;
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
  * 25.07.09          eunchang           변경된 ResponseDTO 반영<br>
+ * 25.07.11          eunchang           생성자 호출 함수 적용<br>
  */
 
 public class SuccessResponseDTOTest {
