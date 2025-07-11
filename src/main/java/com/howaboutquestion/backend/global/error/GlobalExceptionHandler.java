@@ -5,12 +5,14 @@ import com.howaboutquestion.backend.global.common.StatusCode;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Objects;
@@ -26,9 +28,9 @@ import java.util.Objects;
  * -----------------------------------------------------------<br>
  * 25.07.04          eunchang           최초생성<br>
  * 25.07.09          eunchang           클래스명 수정 및 메서드 수정<br>
- * 25.07.11          eunchang           각 클래스의 생성자 호출 함수 적용<br>
+ * 25.07.11          eunchang           각 클래스의 생성자 호출 함수 적용 및 404 처리<br>
  */
-@RestControllerAdvice(annotations = {RestController.class})
+@RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
@@ -63,6 +65,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> forbiddenError(Exception e, WebRequest request){
         return handleExceptionInternal(e, StatusCode.NO_USER_PERMISSION, request);
     }
+
+    /**
+     * 매핑되지 않은 URL 요청에 대해 404 Not Found 상태의 커스텀 에러 응답을 반환합니다.
+     * @param e       요청을 처리할 핸들러를 찾지 못해 발생한 NoHandlerFoundException 예외 객체
+     * @param headers 기본으로 설정된 HTTP 응답 헤더 정보
+     * @param status  기본으로 설정된 HTTP 상태 코드
+     * @param request 현재 HTTP 요청 정보
+     * @return 404 Not Found 상태와 함께 FailureResponseDTO를 바디로 담은 ResponseEntity 객체
+     */
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException e, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return handleExceptionInternal(e, StatusCode.RESOURCE_NOT_FOUND, request);
+    }
+
 
     /**
      * 선언된 예외를 제외한 모든 예외를 INTERNAL_SERVER_ERROR로 처리합니다.
