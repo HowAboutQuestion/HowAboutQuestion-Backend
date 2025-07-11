@@ -37,7 +37,7 @@ public class SuccessResponseDTOTest {
         data.put("age","26");
 
         // when
-        SuccessResponseDTO originData = new SuccessResponseDTO(data);
+        SuccessResponseDTO originData = SuccessResponseDTO.create(data);
 
         // then
         assertThat(originData.isSuccess()).isTrue();
@@ -58,7 +58,7 @@ public class SuccessResponseDTOTest {
         data.put("age","26");
 
         // when
-        SuccessResponseDTO originData = new SuccessResponseDTO(null);
+        SuccessResponseDTO originData = SuccessResponseDTO.create(null);
 
 
         // then
@@ -77,7 +77,7 @@ public class SuccessResponseDTOTest {
         // given
 
         // when
-        FailureResponseDTO failureResponseDTO = new FailureResponseDTO(StatusCode.INVALID_TOKEN);
+        FailureResponseDTO failureResponseDTO = FailureResponseDTO.create(StatusCode.INVALID_TOKEN);
 
         // then
         assertThat(failureResponseDTO.isSuccess()).isFalse();
