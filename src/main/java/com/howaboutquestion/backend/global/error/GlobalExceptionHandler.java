@@ -88,14 +88,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * ErrorCode와 함께 에러 응답을 구성하는 ErrorResponse를 담은 ResponseEntity를 반환하는 헬퍼 메서드입니다.
      */
     private ResponseEntity<Object> handleExceptionInternal(Exception e, StatusCode errorCode, WebRequest request){
-        return handleExceptionInternal(e, new FailureResponseDTO(errorCode, buildErrorMessage(errorCode, e)), HttpHeaders.EMPTY, errorCode.getStatus(), request);
+        return handleExceptionInternal(e, FailureResponseDTO.create(errorCode, buildErrorMessage(errorCode, e)), HttpHeaders.EMPTY, errorCode.getStatus(), request);
     }
 
     /**
      * Spring의 기본 처리 메서드를 호출하여 ErrorResponse를 담은 ResponseEntity를 반환합니다.
      */
     private ResponseEntity<Object> handleExceptionInternal(Exception e, StatusCode errorCode, HttpHeaders headers, HttpStatus status, WebRequest request){
-        return super.handleExceptionInternal(e, new FailureResponseDTO(errorCode, buildErrorMessage(errorCode, e)), headers, status, request);
+        return super.handleExceptionInternal(e, FailureResponseDTO.create(errorCode, buildErrorMessage(errorCode, e)), headers, status, request);
     }
 
     /**

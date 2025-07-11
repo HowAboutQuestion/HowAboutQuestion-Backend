@@ -56,7 +56,7 @@ public class FilterExceptionHandler extends OncePerRequestFilter {
     private void setErrorResponse(HttpServletResponse response, StatusCode errorCode) throws IOException {
         response.setStatus(errorCode.getStatus().value());
         response.setContentType("application/json; charset=UTF-8");
-        FailureResponseDTO errorBody = new FailureResponseDTO(errorCode);
+        FailureResponseDTO errorBody = FailureResponseDTO.create(errorCode);
         response.getWriter().write(objectMapper.writeValueAsString(errorBody));
     }
 
