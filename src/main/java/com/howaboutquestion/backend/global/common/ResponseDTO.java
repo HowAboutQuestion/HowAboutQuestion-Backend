@@ -25,6 +25,25 @@ public abstract class ResponseDTO {
     private String httpStatus;
     private String serverCode;
     private String message;
+
+    private ResponseDTO() {
+    }
+
+    public ResponseDTO(boolean success, StatusCode statusCode) {
+        this.success = success;
+        this.httpCode = statusCode.getStatus().value();
+        this.httpStatus = statusCode.getStatus().name();
+        this.serverCode = statusCode.getCode();
+        this.message = statusCode.getMessage();
+    }
+
+    public ResponseDTO(boolean success, StatusCode statusCode, String message) {
+        this.success = success;
+        this.httpCode = statusCode.getStatus().value();
+        this.httpStatus = statusCode.getStatus().name();
+        this.serverCode = statusCode.getCode();
+        this.message = message;
+    }
 }
 
 
