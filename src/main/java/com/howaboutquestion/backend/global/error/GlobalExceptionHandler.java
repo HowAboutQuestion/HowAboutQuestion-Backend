@@ -80,6 +80,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+
+
     /**
      * 선언된 예외를 제외한 모든 예외를 INTERNAL_SERVER_ERROR로 처리합니다.
      * @param e 발생한 예외
