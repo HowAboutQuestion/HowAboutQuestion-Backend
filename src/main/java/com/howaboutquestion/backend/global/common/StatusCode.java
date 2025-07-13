@@ -29,7 +29,11 @@ public enum StatusCode {
     NO_USER_PERMISSION(HttpStatus.FORBIDDEN, "ERROR-403", "페이지 대한 권한이 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERROR-500", "서버 내부 오류가 발생했습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN-001", "유효하지 않은 토큰입니다."),
-    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN-002", "만료된 토큰입니다.");
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN-002", "만료된 토큰입니다."),
+    NO_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN-003", "액세스 토큰이 필요합니다."),
+
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "AUTH-001", "이미 사용중인 이메일 입니다.");
+    
 
 
     private final HttpStatus status;
