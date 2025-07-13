@@ -1,7 +1,7 @@
 package com.howaboutquestion.backend.global;
 
 import com.howaboutquestion.backend.global.common.StatusCode;
-import com.howaboutquestion.backend.global.error.FailureResponseDTO;
+import com.howaboutquestion.backend.global.response.FailureResponseDTO;
 import com.howaboutquestion.backend.global.response.SuccessResponseDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

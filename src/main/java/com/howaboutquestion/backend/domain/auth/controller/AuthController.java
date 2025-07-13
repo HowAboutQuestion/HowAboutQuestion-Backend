@@ -1,5 +1,6 @@
 package com.howaboutquestion.backend.domain.auth.controller;
 
+import com.howaboutquestion.backend.domain.auth.dto.request.UserLoginRequest;
 import com.howaboutquestion.backend.domain.auth.service.AuthService;
 import com.howaboutquestion.backend.domain.auth.dto.request.UserRegisterRequest;
 import com.howaboutquestion.backend.global.util.ResponseUtility;
@@ -22,5 +23,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid UserRegisterRequest request){
         return ResponseUtility.success(authService.basicRegister(request), "회원가입이 완료되었습니다.");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequest){
+        return ResponseUtility.success();
     }
 }

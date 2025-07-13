@@ -14,4 +14,6 @@ public class AuthService {
     public UserRegisterResponse basicRegister(UserRegisterRequest request){
         return userService.tryRegisterUser(request);
     }
+
+
 }
