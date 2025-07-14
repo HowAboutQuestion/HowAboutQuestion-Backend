@@ -62,7 +62,7 @@ public class TokenService {
      */
 
     private void saveRefreshToken(UserInfoResponse key, String refreshToken){
-        redisService.setValue(key.getId().toString(), refreshToken, Duration.ofMillis(refreshTokenValidity));
+        redisService.saveRefreshToken(key.getId().toString(), refreshToken, Duration.ofMillis(refreshTokenValidity));
     }
 
 }
