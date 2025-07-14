@@ -1,5 +1,7 @@
 package com.howaboutquestion.backend.global.filter;
 
+import com.howaboutquestion.backend.domain.user.service.UserDetailService;
+import com.howaboutquestion.backend.domain.user.service.UserService;
 import com.howaboutquestion.backend.domain.usermeta.entity.UserMetaEntity;
 import com.howaboutquestion.backend.domain.usermeta.entity.UserType;
 import com.howaboutquestion.backend.global.common.StatusCode;
@@ -41,6 +43,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final UserDetailService userDetailService;
     private static final AntPathMatcher antPathMather = new AntPathMatcher();
     private final JwtUtility jwtUtility;
     private static final String HEADER_AUTHORIZATION = "Authorization";
@@ -88,12 +91,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UserType type = jwtUtility.getUserType(accessToken);
         Integer userId = jwtUtility.getUserId(accessToken);
 
-//        UserDetails userDetails;
-//        //TODO : 서비스 만들기
-//
-//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails;
+        if(type.equals(UserType.USER)){
+            userDetails = userDetailService.loadUserByUsername(userId.toString());
+        }else{
+        //TODO : GUEST 만들기
+            throw new CustomException(StatusCode.INVALID_TOKEN);
+        }
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private Authentication getAuthentication(String token) {

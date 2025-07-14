@@ -32,8 +32,10 @@ public enum StatusCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN-002", "만료된 토큰입니다."),
     NO_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN-003", "액세스 토큰이 필요합니다."),
 
-    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "AUTH-001", "이미 사용중인 이메일 입니다.");
-    
+    DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "AUTH-001", "이미 사용중인 이메일 입니다."),
+    NOT_FOUND_USER(HttpStatus.OK, "AUTH-002", "해당 유저를 찾을 수 없습니다."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH-003", "비밀번호가 일치하지 않습니다.");
+
 
 
     private final HttpStatus status;
