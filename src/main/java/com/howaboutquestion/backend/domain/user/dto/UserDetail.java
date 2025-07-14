@@ -10,6 +10,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * packageName    : com.howaboutquestion.backend.domain.user.dto<br>
+ * fileName       : UserDetail.java<br>
+ * author         : cod0216 <br>
+ * date           : 2025.07.13<br>
+ * description    : Spring Security에서 사용자 정보를 나타내는 클래스입니다<br>
+ * ===========================================================<br>
+ * DATE              AUTHOR             NOTE<br>
+ * -----------------------------------------------------------<br>
+ * 25.07.13          cod0216           최초 생성 <br>
+ */
 @Getter
 public class UserDetail implements UserDetails {
 

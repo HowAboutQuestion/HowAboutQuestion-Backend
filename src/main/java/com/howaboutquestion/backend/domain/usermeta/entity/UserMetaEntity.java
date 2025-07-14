@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 /**
  * packageName    : com.howaboutquestion.backend.domain.usermeta.entity<br>
  * fileName       : UserMetaEntity.java<br>
- * author         : Eunchang<br>
+ * author         : cod0216<br>
  * date           : 2025-07-12<br>
  * description    : User Meta Entity 클래스입니다. <br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
- * 25.07.12          EunChang           최초생성<br>
+ * 25.07.12          cod0216           최초생성<br>
  */
 
 @Entity

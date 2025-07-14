@@ -31,12 +31,12 @@ import java.util.Objects;
  * packageName    : com.howaboutquestion.backend.global.util<br>
  * fileName       : GlobalExceptionHandler.java<br>
  * author         : eunchang<br>
- * date           : 2025-06-20<br>
+ * date           : 2025-06-13<br>
  * description    : Jwt토큰으로 인증하고 SecurityContextHolder에 추가하는 필터를 설정하는 클래스 입니다.<br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
- * 25.06.20          eunchang           최초생성<br>
+ * 25.07.13          eunchang           최초생성<br>
  */
 
 @Component
@@ -57,6 +57,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/",
     };
 
+
+    /**
+     * 필터가 내부적으로 수행할 로직입니다.
+     * @param request 사용자 요청
+     * @param response 요청에 대한 응답
+     * @throws CustomException 토큰 관련 에러를 반환합니다.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
@@ -87,6 +94,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
+    /**
+     * AccessToken의 정보에 따라 인증 객체를 생성합니다.
+     * @param accessToken 사용자의 토큰
+     */
     protected void processValidAccessToken(String accessToken){
         UserType type = jwtUtility.getUserType(accessToken);
         Integer userId = jwtUtility.getUserId(accessToken);
@@ -103,6 +114,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    /**
+     *  JWT 토큰에서 정보를 추출해 사용자의 인증 정보가 담긴 객체를 생성합니다.
+     * @param token JWT 토큰
+     * @return 주체의 정보와 권한이 담긴 객체
+     */
     private Authentication getAuthentication(String token) {
         UserType userType = jwtUtility.getUserType(token);
         Integer userId = jwtUtility.getUserId(token);
@@ -111,6 +127,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return new UsernamePasswordAuthenticationToken(userId, null, authorities);
     }
 
+    /**
+     * 요청에 담긴 URL이 예외적인 인증이 필요한지 확인합니다.
+     * @param url 요청에 담긴 URL
+     * @return 요청 수행 가능 여부 반환
+     */
     private boolean checkAllowedUrl(String url) {
         boolean isAllowUrl = Arrays.stream(ALLOW_URLS).anyMatch(pattern -> antPathMather.match(pattern,url));
         boolean isExceptionUrl = Arrays.stream(NOT_ALLOW_URLS).anyMatch(pattern -> antPathMather.match(pattern,url));

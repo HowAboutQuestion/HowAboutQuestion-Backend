@@ -14,7 +14,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+/**
+ * packageName    : com.howaboutquestion.backend.domain.user.service<br>
+ * fileName       : UserService.java<br>
+ * author         : cod0216 <br>
+ * date           : 2025.07.13<br>
+ * description    : USER 관련 서비스 로직을 수행하는 클래스입니다. <br>
+ * ===========================================================<br>
+ * DATE              AUTHOR             NOTE<br>
+ * -----------------------------------------------------------<br>
+ * 25.07.13          cod0216           최초 생성 <br>
+ */
 
 @Service
 @Transactional
@@ -25,6 +35,11 @@ public class UserService {
     private final UserMapper userMapper;
 
 
+    /**
+     * 회원 가입을 시도합니다.
+     * @param request 회원 가입 요청 정보
+     * @return 회원 정보
+     */
     public UserRegisterResponse tryRegisterUser(UserRegisterRequest request){
         String email = request.getEmail();
         if(userRepository.existsByEmail(email)){
@@ -34,6 +49,11 @@ public class UserService {
         return userMapper.mapToUserRegisterResponse(registerUser(request));
     }
 
+    /**
+     * 회원 가입을 수행합니다.
+     * @param request 회원 가입 요청 정보
+     * @return 회원 Entity
+     */
     public UserEntity registerUser(UserRegisterRequest request){
         UserEntity entity = UserEntity.builder()
                 .email(request.getEmail())
@@ -43,6 +63,11 @@ public class UserService {
         return userRepository.save(entity);
     }
 
+    /**
+     * 로그인을 시도합니다.
+     * @param login 로그인 요청 정보
+     * @return 회원 정보
+     */
     public UserInfoResponse tryUserLogin(UserLoginRequest login) {
         UserEntity origin = findByLoginEmail(login.getEmail());
 
@@ -52,16 +77,24 @@ public class UserService {
         return userMapper.mapToUserInfoResponse(origin);
     }
 
+    /**
+     * 요청한 비밀번호와 암호화된 비밀번호를 비교합니다.
+     * @param loginPassword 로그인 시 비밀번호
+     * @param originPassword 암호화된 비밀번호
+     * @return 일치, 불일치 여부
+     */
     public boolean checkPassword(String loginPassword, String originPassword){
         return passwordEncoder.matches(loginPassword, originPassword);
     }
+
+    /**
+     * 회원가입 시 해당 이메일로 가입한 여부 검사
+     * @param email 회원가입 시 입력한 이메일
+     * @return 존재 여부 반환
+     */
     @Transactional(readOnly = true)
     public UserEntity findByLoginEmail(String email){
         return userRepository.findByEmail(email).orElseThrow(()
                 -> new CustomException(StatusCode.NOT_FOUND_USER));
     }
-
-
-
-
 }
