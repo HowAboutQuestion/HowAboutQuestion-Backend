@@ -26,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequest){
-        return ResponseUtility.success();
+    public ResponseEntity<?> login(@RequestBody @Valid UserLoginRequest request){
+        return ResponseUtility.success(authService.basicLogin(request));
     }
 }

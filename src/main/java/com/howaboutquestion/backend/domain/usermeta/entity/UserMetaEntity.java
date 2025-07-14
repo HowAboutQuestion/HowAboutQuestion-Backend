@@ -42,4 +42,8 @@ public abstract class UserMetaEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", insertable = false, updatable = false)
+    private UserType userType;
+
 }
