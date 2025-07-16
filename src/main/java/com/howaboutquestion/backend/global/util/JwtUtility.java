@@ -141,9 +141,7 @@ public class JwtUtility {
             throw new CustomException(StatusCode.INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
             throw new CustomException(StatusCode.EXPIRED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            throw new CustomException(StatusCode.INVALID_TOKEN);
-        } catch (IllegalArgumentException e) {
+        } catch (UnsupportedJwtException | IllegalArgumentException e) {
             throw new CustomException(StatusCode.INVALID_TOKEN);
         }
     }
