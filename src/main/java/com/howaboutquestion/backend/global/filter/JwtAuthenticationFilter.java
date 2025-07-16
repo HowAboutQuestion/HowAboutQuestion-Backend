@@ -1,8 +1,7 @@
 package com.howaboutquestion.backend.global.filter;
 
-import com.howaboutquestion.backend.domain.user.service.UserDetailService;
-import com.howaboutquestion.backend.domain.user.service.UserService;
-import com.howaboutquestion.backend.domain.usermeta.entity.UserMetaEntity;
+import com.howaboutquestion.backend.domain.auth.dto.request.TokenUserInfo;
+import com.howaboutquestion.backend.domain.user.dto.UserDetail;
 import com.howaboutquestion.backend.domain.usermeta.entity.UserType;
 import com.howaboutquestion.backend.global.common.StatusCode;
 import com.howaboutquestion.backend.global.error.CustomException;
@@ -13,9 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -24,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,13 +32,13 @@ import java.util.Objects;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          eunchang           최초생성<br>
+ * 25.07.16          eunchang           DB 조회 로직 개선<br>
  */
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final UserDetailService userDetailService;
     private static final AntPathMatcher antPathMather = new AntPathMatcher();
     private final JwtUtility jwtUtility;
     private static final String HEADER_AUTHORIZATION = "Authorization";
@@ -92,20 +87,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * AccessToken의 정보에 따라 인증 객체를 생성합니다.
+     * AccessToken에 담긴 인증 객체를 생성합니다.
      * @param accessToken 사용자의 토큰
      */
     protected void processValidAccessToken(String accessToken){
         UserType type = jwtUtility.getUserType(accessToken);
         Integer userId = jwtUtility.getUserId(accessToken);
+        String userName = jwtUtility.getUserName(accessToken);
+        String userEmail = jwtUtility.getUserEmail(accessToken);
+        String userProfile = jwtUtility.getProfile(accessToken);
+        TokenUserInfo tokenUserInfo = TokenUserInfo.builder()
+                .userType(type)
+                .id(userId)
+                .email(userEmail)
+                .name(userName)
+                .profile(userProfile)
+                .build();
 
-        UserDetails userDetails;
-        if(type.equals(UserType.USER)){
-            userDetails = userDetailService.loadUserByUsername(userId.toString());
-        }else{
-        //TODO : GUEST 만들기
-            throw new CustomException(StatusCode.INVALID_TOKEN);
-        }
+        UserDetails userDetails = new UserDetail(tokenUserInfo);
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

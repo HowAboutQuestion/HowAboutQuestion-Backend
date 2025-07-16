@@ -1,7 +1,11 @@
 package com.howaboutquestion.backend.domain.user.dto;
 
+import com.howaboutquestion.backend.domain.auth.dto.request.TokenUserInfo;
+import com.howaboutquestion.backend.domain.auth.dto.response.UserLoginResponse;
+import com.howaboutquestion.backend.domain.user.dto.resopnse.UserInfoResponse;
 import com.howaboutquestion.backend.domain.user.entity.UserEntity;
 import com.howaboutquestion.backend.domain.usermeta.entity.UserType;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,13 +24,15 @@ import java.util.Collections;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          cod0216           최초 생성 <br>
+ * 25.07.16          cod0216           TokenUserInfo 클래스 추가 <br>
  */
 @Getter
+@Builder
 public class UserDetail implements UserDetails {
 
-    private final UserEntity user;
+    private final TokenUserInfo user;
 
-    public UserDetail(UserEntity user) {
+    public UserDetail(TokenUserInfo user) {
         this.user = user;
     }
 
@@ -79,7 +85,7 @@ public class UserDetail implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + UserType.USER.name()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getUserType().name()));
     }
 
     /**
@@ -88,7 +94,7 @@ public class UserDetail implements UserDetails {
      */
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return "";
     }
 
     /**
@@ -98,5 +104,21 @@ public class UserDetail implements UserDetails {
     @Override
     public String getUsername() {
         return user.getId().toString();
+    }
+
+    /**
+     * 토큰에서 추출한 회원의 Email을 반환합니다.
+     * @return 회원 Email
+     */
+    public String getUserEmail() {
+        return user.getEmail();
+    }
+
+    /**
+     * 토큰에서 추출한 회원의 프로필을 반환합니다.
+     * @return 회원 프로필
+     */
+    public String getUserProfile() {
+        return user.getProfile();
     }
 }

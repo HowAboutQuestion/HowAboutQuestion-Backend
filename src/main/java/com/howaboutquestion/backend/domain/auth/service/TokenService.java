@@ -49,8 +49,8 @@ public class TokenService {
     public JwtTokenResponse generateTokens(UserInfoResponse user){
         String tokenID = UUID.randomUUID().toString();
 
-        String accessToken = jwtUtility.createAccessToken(user.getId(), user.getName(), user.getUserType(), tokenID);
-        String refreshToken = jwtUtility.createRefreshToken(user.getId(), user.getName(), user.getUserType(), tokenID);
+        String accessToken = jwtUtility.createAccessToken(user.getId(), user.getEmail(), user.getName(), user.getUserType(), user.getProfile(), tokenID);
+        String refreshToken = jwtUtility.createRefreshToken(user.getId(), user.getEmail(), user.getName(), user.getUserType(), user.getProfile(), tokenID);
         saveRefreshToken(user, refreshToken);
         return JwtTokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }

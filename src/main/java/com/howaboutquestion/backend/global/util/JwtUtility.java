@@ -26,12 +26,15 @@ import java.util.Date;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.06.20          eunchang           최초생성<br>
+ * 25.06.16          eunchang           Email, Profile 추가<br>
  */
 @Component
 public class JwtUtility {
     private static final String CLAIM_USER_ID = "id";
     private static final String CLAIM_USER_NAME = "name";
+    private static final String CLAIM_USER_EMAIL = "email";
     private static final String CLAIM_TYPE = "type";
+    private static final String CLAIM_PROFILE = "profile";
     private static final String CLAIM_UUID = "uuid";
 
     @Value("${jwt.secret}")
@@ -61,8 +64,8 @@ public class JwtUtility {
      * @param uuid 토큰 고유 ID
      * @return AccessToken 을 반환합니다.
      */
-    public String createAccessToken(Integer userId, String userName, UserType userType, String uuid) {
-        return createToken(userId, userName, userType, uuid, accessTokenValidateTime);
+    public String createAccessToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid) {
+        return createToken(userId, userEmail, userName, userType, profile, uuid, accessTokenValidateTime);
     }
 
     /**
@@ -72,8 +75,8 @@ public class JwtUtility {
      * @param uuid 토큰 고유 ID
      * @return RefreshToken 을 반환합니다.
      */
-    public String createRefreshToken(Integer userId, String userName, UserType userType, String uuid){
-        return createToken(userId, userName, userType, uuid, refreshTokenValidateTime);
+    public String createRefreshToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid){
+        return createToken(userId, userEmail, userName, userType, profile, uuid, refreshTokenValidateTime);
     }
 
 
@@ -81,18 +84,22 @@ public class JwtUtility {
      * Jwt 토큰을 생성합니다.
      * @param userId 유저 ID
      * @param userName 유저 네임
+     * @param userEmail 유저 이메일
+     * @param profile 유저 프로필 사진
      * @param uuid 토큰 고유 ID
      * @param validity 유효기간
      * @return jwt 토큰
      */
-    private String createToken(Integer userId, String userName, UserType userType, String uuid, long validity){
+    private String createToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid, long validity){
         Date createTime = new Date();
         Date expireTime = new Date(createTime.getTime() + validity);
 
         return Jwts.builder()
                 .claim(CLAIM_USER_ID, userId)
+                .claim(CLAIM_USER_EMAIL, userEmail)
                 .claim(CLAIM_USER_NAME, userName)
                 .claim(CLAIM_TYPE, userType)
+                .claim(CLAIM_PROFILE, profile)
                 .claim(CLAIM_UUID, uuid)
                 .setIssuedAt(createTime)
                 .setExpiration(expireTime)
@@ -108,11 +115,25 @@ public class JwtUtility {
     public Integer getUserId(String token) { return getClaim(token, CLAIM_USER_ID, Integer.class);}
 
     /**
+     * Jwt 토큰에서 사용자 이메일을 가져옵니다.
+     * @param token Jwt 토큰
+     * @return 사용자 Email
+     */
+    public String getUserEmail(String token) { return getClaim(token, CLAIM_USER_EMAIL, String.class);}
+
+    /**
      * Jwt 토큰에서 사용자 이름을 가져옵니다.
      * @param token Jwt 토큰
      * @return 사용자 Name
      */
     public String getUserName(String token) { return getClaim(token, CLAIM_USER_NAME, String.class);}
+
+    /**
+     * Jwt 토큰에서 사용자 프로필을 가져옵니다.
+     * @param token Jwt 토큰
+     * @return 사용자 프로필
+     */
+    public String getProfile(String token) { return getClaim(token, CLAIM_PROFILE, String.class);}
 
     /**
      * Jwt 토큰의 사용자 타입을 가져옵니다.
