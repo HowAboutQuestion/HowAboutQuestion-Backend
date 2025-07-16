@@ -81,9 +81,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String accessToken = authHeader.substring(BEARER.length());
         if(jwtUtility.validateToken(accessToken)) {
-            Authentication auth = getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
             processValidAccessToken(accessToken);
             filterChain.doFilter(request, response);
 
@@ -112,19 +109,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    /**
-     *  JWT 토큰에서 정보를 추출해 사용자의 인증 정보가 담긴 객체를 생성합니다.
-     * @param token JWT 토큰
-     * @return 주체의 정보와 권한이 담긴 객체
-     */
-    private Authentication getAuthentication(String token) {
-        UserType userType = jwtUtility.getUserType(token);
-        Integer userId = jwtUtility.getUserId(token);
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(userType.name()));
-
-        return new UsernamePasswordAuthenticationToken(userId, null, authorities);
     }
 
     /**
