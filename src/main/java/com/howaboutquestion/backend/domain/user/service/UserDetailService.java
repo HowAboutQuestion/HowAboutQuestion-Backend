@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
  * 25.07.13          cod0216           최초 생성 <br>
  */
 @Service
+@Deprecated
 @RequiredArgsConstructor
 public class UserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
