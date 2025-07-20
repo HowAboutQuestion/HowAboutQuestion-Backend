@@ -1,7 +1,6 @@
 package com.howaboutquestion.backend.global.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.howaboutquestion.backend.global.common.ResponseDTO;
 import com.howaboutquestion.backend.global.common.StatusCode;
 import lombok.Getter;
 

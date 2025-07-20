@@ -1,5 +1,6 @@
-package com.howaboutquestion.backend.global.common;
+package com.howaboutquestion.backend.global.response;
 
+import com.howaboutquestion.backend.global.common.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

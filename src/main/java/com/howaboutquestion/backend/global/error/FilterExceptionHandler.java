@@ -2,6 +2,7 @@ package com.howaboutquestion.backend.global.error;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.howaboutquestion.backend.global.common.StatusCode;
+import com.howaboutquestion.backend.global.response.FailureResponseDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

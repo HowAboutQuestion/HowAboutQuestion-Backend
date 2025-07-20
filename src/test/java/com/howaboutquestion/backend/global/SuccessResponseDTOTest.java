@@ -1,12 +1,10 @@
 package com.howaboutquestion.backend.global;
 
 import com.howaboutquestion.backend.global.common.StatusCode;
-import com.howaboutquestion.backend.global.error.FailureResponseDTO;
+import com.howaboutquestion.backend.global.response.FailureResponseDTO;
 import com.howaboutquestion.backend.global.response.SuccessResponseDTO;
-import com.howaboutquestion.backend.global.util.ResponseUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;

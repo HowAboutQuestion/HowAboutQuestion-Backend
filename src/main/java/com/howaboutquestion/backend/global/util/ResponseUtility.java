@@ -1,29 +1,29 @@
 package com.howaboutquestion.backend.global.util;
 
-import com.howaboutquestion.backend.global.common.ResponseDTO;
 import com.howaboutquestion.backend.global.common.StatusCode;
-import com.howaboutquestion.backend.global.error.FailureResponseDTO;
+import com.howaboutquestion.backend.global.response.FailureResponseDTO;
 import com.howaboutquestion.backend.global.response.SuccessResponseDTO;
 import org.springframework.http.ResponseEntity;
 
 /**
  * packageName    : com.howaboutquestion.backend.global.util;<br>
- * fileName       : ResponseUtil.java<br>
+ * fileName       : ResponseUtility.java<br>
  * author         : eunchang <br>
  * date           : 2025-07-09<br>
- * description    : ResponseDTO를 다루는 ResponseUtil 클래스입니다. <br>
+ * description    : ResponseDTO를 다루는 ResponseUtility 클래스입니다. <br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.09          eunchang           최초생성<br>
- * 25.07.11          eunchang           create 함수를 사용해 생성자 호출<br
+ * 25.07.11          eunchang           create 함수를 사용해 생성자 호출
+ * 25.07.13          eunchang           util 클래스 utility로 이름 변경<br>
  */
 
-public final class ResponseUtil {
+public final class ResponseUtility {
     /**
      * 객체 생성을 방지합니다.
      */
-    private ResponseUtil() {
+    private ResponseUtility() {
         throw new UnsupportedOperationException("Utility 클래스는 생성할 수 없습니다.");
     }
 
