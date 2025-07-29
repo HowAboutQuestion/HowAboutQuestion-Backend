@@ -50,12 +50,3 @@ public class SubscribeEntity {
         }
     }
 }
-/**
- *
- *
- *   `id` int unsigned NOT NULL AUTO_INCREMENT,
- *   `book_id` int unsigned NOT NULL,
- *   `user_id` int unsigned NOT NULL,
- *   `check_favorite` tinyint(1) NOT NULL DEFAULT '0',
- *
- */
