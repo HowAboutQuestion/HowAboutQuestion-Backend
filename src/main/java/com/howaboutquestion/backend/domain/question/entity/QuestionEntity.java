@@ -18,7 +18,7 @@ import java.util.Set;
  * packageName    : com.howaboutquestion.backend.domain.question.entity<br>
  * fileName       : QuestionEntity.java<br>
  * author         : khaelim1311 <br>
- * date           : 2025-07-24<br>
+ * date           : 25.07.24<br>
  * description    : Question(문제) entity 추상 클래스입니다. <br>
  *                  각 문제 유형(Multiple, Subjective)의 공통 필드를 정의합니다.
  * ===========================================================<br>

@@ -4,7 +4,6 @@ package com.howaboutquestion.backend.domain.dailyhistory.entity;
 import com.howaboutquestion.backend.domain.usermeta.entity.UserMetaEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,7 +12,7 @@ import java.time.LocalDate;
  * packageName    : com.howaboutquestion.backend.domain.dailyhistory.entity<br>
  * fileName       : DailyHistoryEntity.java<br>
  * author         : khaelim1311 <br>
- * date           : 2025-07-24<br>
+ * date           : 25.07.24<br>
  * description    : DailyHistory entity 클래스입니다. <br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>

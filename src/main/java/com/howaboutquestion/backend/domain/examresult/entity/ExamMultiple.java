@@ -9,7 +9,7 @@ import lombok.*;
  * packageName    : com.howaboutquestion.backend.domain.examresult.entity<br>
  * fileName       : ExamMultiple.java<br>
  * author         : khaelim1311 <br>
- * date           : 2025-07-24<br>
+ * date           : 25.07.24<br>
  * description    : ExamMultiple entity 클래스입니다. <br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
