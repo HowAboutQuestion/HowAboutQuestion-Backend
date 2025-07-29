@@ -40,7 +40,7 @@ public class ExamEntity {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "daily_history_id", nullable = false, foreignKey = @ForeignKey(name = "tb_exam_ibfk_1"))
+    @JoinColumn(name = "daily_history_id", nullable = false)
     private DailyHistoryEntity dailyHistory;
 
     @Column(name = "correct_question", nullable = false)

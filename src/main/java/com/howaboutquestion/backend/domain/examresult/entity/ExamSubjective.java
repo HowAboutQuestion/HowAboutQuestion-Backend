@@ -22,6 +22,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExamSubjective extends ExamResultEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String answer;
 }
