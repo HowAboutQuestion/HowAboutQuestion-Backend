@@ -33,6 +33,7 @@ import java.util.Objects;
  * -----------------------------------------------------------<br>
  * 25.07.13          eunchang           최초생성<br>
  * 25.07.16          eunchang           DB 조회 로직 개선<br>
+ * 25.08.01          eunchang           Url get 메서드 추가<br>
  */
 
 @Component
