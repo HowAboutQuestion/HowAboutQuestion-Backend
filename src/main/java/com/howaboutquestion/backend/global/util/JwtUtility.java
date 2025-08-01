@@ -65,7 +65,7 @@ public class JwtUtility {
      * @return AccessToken 을 반환합니다.
      */
     public String createAccessToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid) {
-        return createToken(userId, userEmail, userName, userType, profile, uuid, accessTokenValidateTime);
+        return createToken(userId, userEmail, userName, userType, profile, uuid, accessTokenValidateTime * 1000L);
     }
 
     /**
@@ -76,7 +76,7 @@ public class JwtUtility {
      * @return RefreshToken 을 반환합니다.
      */
     public String createRefreshToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid){
-        return createToken(userId, userEmail, userName, userType, profile, uuid, refreshTokenValidateTime);
+        return createToken(userId, userEmail, userName, userType, profile, uuid, refreshTokenValidateTime * 1000L);
     }
 
 

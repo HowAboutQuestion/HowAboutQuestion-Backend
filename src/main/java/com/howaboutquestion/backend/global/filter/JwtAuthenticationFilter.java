@@ -45,11 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final  String BEARER  = "Bearer ";
 
     private static final String[] ALLOW_URLS = new String[] {
-            "/", "/api/auths/**"
+            "/", "/api/auths/login"
     };
 
     private static final String[] NOT_ALLOW_URLS = new String[] {
-            "/",
+            "/", "/api/auths/logout"
     };
 
 
@@ -120,5 +120,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean isExceptionUrl = Arrays.stream(NOT_ALLOW_URLS).anyMatch(pattern -> antPathMather.match(pattern,url));
 
         return isAllowUrl && !isExceptionUrl;
+    }
+
+    public String[] getAllowUrls() {
+        return ALLOW_URLS;
+    }
+
+    public String[] getNotAllowUrls() {
+        return NOT_ALLOW_URLS;
     }
 }
