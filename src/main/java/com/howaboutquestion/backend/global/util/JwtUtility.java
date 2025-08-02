@@ -65,7 +65,7 @@ public class JwtUtility {
      * @return AccessToken 을 반환합니다.
      */
     public String createAccessToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid) {
-        return createToken(userId, userEmail, userName, userType, profile, uuid, accessTokenValidateTime);
+        return createToken(userId, userEmail, userName, userType, profile, uuid, accessTokenValidateTime * 1000L);
     }
 
     /**
@@ -76,7 +76,7 @@ public class JwtUtility {
      * @return RefreshToken 을 반환합니다.
      */
     public String createRefreshToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid){
-        return createToken(userId, userEmail, userName, userType, profile, uuid, refreshTokenValidateTime);
+        return createToken(userId, userEmail, userName, userType, profile, uuid, refreshTokenValidateTime * 1000L);
     }
 
 
@@ -98,7 +98,7 @@ public class JwtUtility {
                 .claim(CLAIM_USER_ID, userId)
                 .claim(CLAIM_USER_EMAIL, userEmail)
                 .claim(CLAIM_USER_NAME, userName)
-                .claim(CLAIM_TYPE, userType)
+                .claim(CLAIM_TYPE, userType.name())
                 .claim(CLAIM_PROFILE, profile)
                 .claim(CLAIM_UUID, uuid)
                 .setIssuedAt(createTime)
@@ -124,7 +124,7 @@ public class JwtUtility {
     /**
      * Jwt 토큰에서 사용자 이름을 가져옵니다.
      * @param token Jwt 토큰
-     * @return 사용자 Name
+     * @return 사용자 이름
      */
     public String getUserName(String token) { return getClaim(token, CLAIM_USER_NAME, String.class);}
 
@@ -138,16 +138,16 @@ public class JwtUtility {
     /**
      * Jwt 토큰의 사용자 타입을 가져옵니다.
      * @param token Jwt 토큰
-     * @return 사용자 Type
+     * @return 사용자 타입
      */
-    public UserType getUserType(String token) { return getClaim(token, CLAIM_TYPE, UserType.class);}
+    public UserType getUserType(String token) {return UserType.valueOf(getClaim(token, CLAIM_TYPE, String.class));}
 
     /**
      * Jwt 토큰의 고유 번호을 가져옵니다.
      * @param token Jwt 토큰
      * @return Token UUID
      */
-    public Integer getUUID(String token) { return getClaim(token, CLAIM_UUID, Integer.class);}
+    public String getUUID(String token) { return getClaim(token, CLAIM_UUID, String.class);}
 
     /**
      * 토큰 유효성을 검사합니다.

@@ -33,6 +33,7 @@ import java.util.Objects;
  * -----------------------------------------------------------<br>
  * 25.07.13          eunchang           최초생성<br>
  * 25.07.16          eunchang           DB 조회 로직 개선<br>
+ * 25.08.01          eunchang           Url get 메서드 추가<br>
  */
 
 @Component
@@ -45,11 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final  String BEARER  = "Bearer ";
 
     private static final String[] ALLOW_URLS = new String[] {
-            "/", "/api/auths/**"
+            "/", "/api/auths/login"
     };
 
     private static final String[] NOT_ALLOW_URLS = new String[] {
-            "/",
+            "/", "/api/auths/logout"
     };
 
 
@@ -120,5 +121,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean isExceptionUrl = Arrays.stream(NOT_ALLOW_URLS).anyMatch(pattern -> antPathMather.match(pattern,url));
 
         return isAllowUrl && !isExceptionUrl;
+    }
+
+    public String[] getAllowUrls() {
+        return ALLOW_URLS;
+    }
+
+    public String[] getNotAllowUrls() {
+        return NOT_ALLOW_URLS;
     }
 }
