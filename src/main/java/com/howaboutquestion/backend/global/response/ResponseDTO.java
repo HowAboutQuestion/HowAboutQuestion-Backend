@@ -4,6 +4,7 @@ import com.howaboutquestion.backend.global.common.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * packageName    : com.howaboutquestion.backend.global.common<br>
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
  * <br>
  */
 @Getter
+@ToString
 @AllArgsConstructor
 public abstract class ResponseDTO {
     private boolean success;

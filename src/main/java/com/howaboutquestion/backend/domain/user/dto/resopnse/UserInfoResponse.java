@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserInfoResponse {

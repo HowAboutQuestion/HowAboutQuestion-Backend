@@ -15,9 +15,16 @@ import lombok.ToString;
  * 25.07.13          cod0216           최초 생성 <br>
  */
 @Getter
-@ToString
 public class UserLoginRequest {
     @Email
     private String email;
     private String password;
+
+    @Override
+    public String toString() {
+        return "UserLoginRequest(" +
+                "email='" + email + '\'' +
+                ", password='****" + '\'' +
+                ')';
+    }
 }
