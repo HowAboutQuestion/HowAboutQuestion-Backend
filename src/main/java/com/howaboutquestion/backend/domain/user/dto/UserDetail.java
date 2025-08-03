@@ -98,12 +98,12 @@ public class UserDetail implements UserDetails {
     }
 
     /**
-     * 회원 PK 값을 반환합니다.
-     * @return 회원 고유 ID값
+     * 회원 이름을 반환합니다.
+     * @return 회원 이름
      */
     @Override
     public String getUsername() {
-        return user.getId().toString();
+        return user.getName();
     }
 
     /**
@@ -121,4 +121,9 @@ public class UserDetail implements UserDetails {
     public String getUserProfile() {
         return user.getProfile();
     }
+
+    public String getUserId(){
+        return user.getId().toString();
+    }
+
 }
