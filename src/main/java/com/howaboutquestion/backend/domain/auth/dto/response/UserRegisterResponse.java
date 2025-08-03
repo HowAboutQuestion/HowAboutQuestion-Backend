@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserRegisterResponse {
 
-    private Integer id;
+    private Long id;
     private LocalDateTime createdAt;
     private String email;
     private String name;

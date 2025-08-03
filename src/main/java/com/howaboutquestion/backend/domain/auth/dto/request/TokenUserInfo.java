@@ -12,6 +12,7 @@ import lombok.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.17          cod0216           최초 생성 <br>
+ * 25.07.03          cod0216           ID 타입 Long 변경 <br>
  */
 
 @Getter
@@ -19,7 +20,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenUserInfo {
-    private Integer id;
+    private Long id;
     private UserType userType;
     private String email;
     private String name;

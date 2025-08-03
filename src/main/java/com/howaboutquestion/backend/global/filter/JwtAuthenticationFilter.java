@@ -46,11 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final  String BEARER  = "Bearer ";
 
     private static final String[] ALLOW_URLS = new String[] {
-            "/", "/api/auths/login"
+            "/", "/api/auths/register", "/api/auths/login",
     };
 
     private static final String[] NOT_ALLOW_URLS = new String[] {
-            "/", "/api/auths/logout"
+            "/", "/api/auths/logout",
     };
 
 
@@ -93,7 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     protected void processValidAccessToken(String accessToken){
         UserType type = jwtUtility.getUserType(accessToken);
-        Integer userId = jwtUtility.getUserId(accessToken);
+        Long userId = jwtUtility.getUserId(accessToken);
         String userName = jwtUtility.getUserName(accessToken);
         String userEmail = jwtUtility.getUserEmail(accessToken);
         String userProfile = jwtUtility.getProfile(accessToken);

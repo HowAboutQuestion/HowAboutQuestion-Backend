@@ -64,7 +64,7 @@ public class JwtUtility {
      * @param uuid 토큰 고유 ID
      * @return AccessToken 을 반환합니다.
      */
-    public String createAccessToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid) {
+    public String createAccessToken(Long userId, String userEmail, String userName, UserType userType, String profile, String uuid) {
         return createToken(userId, userEmail, userName, userType, profile, uuid, accessTokenValidateTime * 1000L);
     }
 
@@ -75,7 +75,7 @@ public class JwtUtility {
      * @param uuid 토큰 고유 ID
      * @return RefreshToken 을 반환합니다.
      */
-    public String createRefreshToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid){
+    public String createRefreshToken(Long userId, String userEmail, String userName, UserType userType, String profile, String uuid){
         return createToken(userId, userEmail, userName, userType, profile, uuid, refreshTokenValidateTime * 1000L);
     }
 
@@ -90,7 +90,7 @@ public class JwtUtility {
      * @param validity 유효기간
      * @return jwt 토큰
      */
-    private String createToken(Integer userId, String userEmail, String userName, UserType userType, String profile, String uuid, long validity){
+    private String createToken(Long userId, String userEmail, String userName, UserType userType, String profile, String uuid, long validity){
         Date createTime = new Date();
         Date expireTime = new Date(createTime.getTime() + validity);
 
@@ -112,7 +112,7 @@ public class JwtUtility {
      * @param token Jwt 토큰
      * @return 사용자 Id
      */
-    public Integer getUserId(String token) { return getClaim(token, CLAIM_USER_ID, Integer.class);}
+    public Long getUserId(String token) { return getClaim(token, CLAIM_USER_ID, Long.class);}
 
     /**
      * Jwt 토큰에서 사용자 이메일을 가져옵니다.
