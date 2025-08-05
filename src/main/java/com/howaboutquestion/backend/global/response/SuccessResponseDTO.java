@@ -3,6 +3,7 @@ package com.howaboutquestion.backend.global.response;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.howaboutquestion.backend.global.common.StatusCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * packageName    : com.howaboutquestion.backend.global.response<br>
@@ -19,6 +20,7 @@ import lombok.Getter;
  */
 
 @Getter
+@ToString
 @JsonPropertyOrder({"success", "httpCode", "httpStatus", "serverCode", "message", "data"})
 public final class SuccessResponseDTO<T> extends ResponseDTO {
     private final T data;
@@ -45,7 +47,6 @@ public final class SuccessResponseDTO<T> extends ResponseDTO {
     /**
      * 응답 데이터를 커스텀한 메시지와 함께 반환할 Reponse 클래스 생성하고 반환 합니다.
      * @param data 응답 데이터
-     * @param message 커스텀 메시지
      */
     public static <T> SuccessResponseDTO<T> create (T data){
         return new SuccessResponseDTO(data);
@@ -59,9 +60,5 @@ public final class SuccessResponseDTO<T> extends ResponseDTO {
     public static <T> SuccessResponseDTO<T> create (T data, String message){
         return new SuccessResponseDTO(data, message);
     }
-
-
-
-
 
 }

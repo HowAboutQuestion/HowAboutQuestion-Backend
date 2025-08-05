@@ -18,10 +18,11 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserInfoResponse {
-    private Integer id;
+    private Long id;
     private LocalDateTime createdAt;
     private UserType userType;
     private String email;
