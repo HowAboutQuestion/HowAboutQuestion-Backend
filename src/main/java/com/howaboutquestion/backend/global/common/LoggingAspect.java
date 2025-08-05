@@ -1,6 +1,7 @@
 package com.howaboutquestion.backend.global.common;
 
 import com.howaboutquestion.backend.domain.user.dto.UserDetail;
+import com.howaboutquestion.backend.global.error.CustomException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import java.util.Objects;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.08.03          cod0216           최초 생성 <br>
+ * 25.08.06          cod0216           의도한 Exception 로그 Info 변경 <br>
  */
 
 @Slf4j
@@ -86,7 +88,11 @@ public class LoggingAspect {
 
     @AfterThrowing(value = "onService()", throwing = "e")
     public void afterServiceThrowLog(JoinPoint joinPoint, Throwable e){
-        log.error("\n[Error]-[{}:{}] : Method: {} Args: {} Error: {} StackTrace: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), getParams(joinPoint), e.getMessage(), e.getStackTrace());
+        if(e instanceof CustomException ce){
+            log.info("\n[Error]-[{}:{}] : Method: {} Args: {} Error: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), getParams(joinPoint), e.getMessage());
+        } else {
+            log.error("\n[Error]-[{}:{}] : Method: {} Args: {} Error: {} \nStackTrace: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), getParams(joinPoint), e.getMessage(), e.getStackTrace());
+        }
     }
 
     /**
@@ -134,14 +140,26 @@ public class LoggingAspect {
             return result;
         } catch (Throwable e) {
             long duration = System.currentTimeMillis() - start;
-            log.error("\n[Response]-[{}:{}] : Method: {} time: {}ms Error: {} StackTrace: {}",
-                    getUserType(),
-                    getUserId(),
-                    proceed.getSignature().toShortString(),
-                    duration,
-                    e.getMessage(),
-                    e.getStackTrace()
-            );
+            if(e instanceof CustomException){
+                log.info("\n[Response]-[{}:{}] : Method: {} time: {}ms Error: {} \nStackTrace: {}",
+                        getUserType(),
+                        getUserId(),
+                        proceed.getSignature().toShortString(),
+                        duration,
+                        e.getMessage(),
+                        e.getStackTrace()
+                );
+            }else {
+                log.error("\n[Response]-[{}:{}] : Method: {} time: {}ms Error: {} \nStackTrace: {}",
+                        getUserType(),
+                        getUserId(),
+                        proceed.getSignature().toShortString(),
+                        duration,
+                        e.getMessage(),
+                        e.getStackTrace()
+                );
+            }
+
             throw e;
         }
     }
