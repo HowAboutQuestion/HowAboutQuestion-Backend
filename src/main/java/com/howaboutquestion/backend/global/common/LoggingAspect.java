@@ -63,9 +63,9 @@ public class LoggingAspect {
     @Before("onRequest()")
     public void beforeRequestLog(JoinPoint joinPoint) {
         if(!log.isDebugEnabled()){
-            log.info("[Request]-[{}] : HttpMethod: {} Url: {} Args: {}", getUserType(), request.getMethod(), request.getRequestURI(), getParams(joinPoint).toString());
+            log.info("\n[Request]-[{}] : HttpMethod: {} Url: {} Args: {}", getUserType(), request.getMethod(), request.getRequestURI(), getParams(joinPoint).toString());
         }else {
-            log.debug("[Request]-[{}:{}] : HttpMethod: {} Url: {} Args: {} Headers: {}", getUserType(), getUserId(), request.getMethod(), request.getRequestURI(), getParams(joinPoint).toString(), getHeader(request));
+            log.debug("\n[Request]-[{}:{}] : HttpMethod: {} Url: {} Args: {} Headers: {}", getUserType(), getUserId(), request.getMethod(), request.getRequestURI(), getParams(joinPoint).toString(), getHeader(request));
         }
     }
 
@@ -75,7 +75,18 @@ public class LoggingAspect {
      */
     @Before("onService()")
     public void beforeServiceLog(JoinPoint joinPoint) {
-        log.debug("[Before]-[{}:{}] : Method: {} Args: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), getParams(joinPoint));
+        log.debug("\n[Before]-[{}:{}] : Method: {} Args: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), getParams(joinPoint));
+    }
+
+    /**
+     * 사용자의 요청에 의해 호출된 메서드가 실행 중 발상한 에러 정보를 로그에 기록합니다.
+     * @param joinPoint 호출된 메서드의 정보를 제공하는 JoinPoint 객체
+     * @param e 에러 정보를 갖는 객체
+     */
+
+    @AfterThrowing(value = "onService()", throwing = "e")
+    public void afterServiceThrowLog(JoinPoint joinPoint, Throwable e){
+        log.error("\n[Error]-[{}:{}] : Method: {} Args: {} Error: {} StackTrace: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), getParams(joinPoint), e.getMessage(), e.getStackTrace());
     }
 
     /**
@@ -85,7 +96,7 @@ public class LoggingAspect {
      */
     @AfterReturning(value = "onService()", returning = "returnObj")
     public void afterServiceLog(JoinPoint joinPoint, Object returnObj) {
-        log.debug("[After]-[{}:{}] : Method: {} Return: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), returnObj);
+        log.debug("\n[After]-[{}:{}] : Method: {} Return: {}", getUserType(), getUserId(), joinPoint.getSignature().toShortString(), returnObj);
     }
 
 
@@ -97,32 +108,46 @@ public class LoggingAspect {
     @AfterReturning(value = "onRequest()", returning = "returnObj")
     public void afterResponseLog(JoinPoint joinPoint, Object returnObj) {
         if(!log.isDebugEnabled())
-            log.info("[Response]-[{}] : {}", getUserType(), returnObj);
+            log.info("\n[Response]-[{}] : {}", getUserType(), returnObj);
     }
 
     /**
-     * 사용자의 요청에대 한 최종 응답 정보들을 반환합니다.
+     * 사용자의 요청에 대한 최종 응답 정보들을 반환합니다.
      * @param proceed 실행 메서드
      * @return 수행한 메서드의 결과 값
-     * @throws Throwable 메서드 수행 중 발생한 예러
+     * @throws Throwable 메서드 수행 중 발생한 에러
      */
     @Around("onRequest()")
     public Object aroundRequestLog(ProceedingJoinPoint proceed) throws Throwable {
         long start = System.currentTimeMillis();
-        Object result = proceed.proceed();
-        long duration = System.currentTimeMillis() - start;
-        log.debug("[Response]-[{}:{}] : Method: {} time: {}ms, returned: {} ",
-                getUserType(),
-                getUserId(),
-                proceed.getSignature().toShortString(),
-                duration,
-                result
-        );
-        return result;
+        Object result = null;
+        try {
+            result = proceed.proceed();
+            long duration = System.currentTimeMillis() - start;
+            log.debug("\n[Response]-[{}:{}] : Method: {} time: {}ms, returned: {} ",
+                    getUserType(),
+                    getUserId(),
+                    proceed.getSignature().toShortString(),
+                    duration,
+                    result
+            );
+            return result;
+        } catch (Throwable e) {
+            long duration = System.currentTimeMillis() - start;
+            log.error("\n[Response]-[{}:{}] : Method: {} time: {}ms Error: {} StackTrace: {}",
+                    getUserType(),
+                    getUserId(),
+                    proceed.getSignature().toShortString(),
+                    duration,
+                    e.getMessage(),
+                    e.getStackTrace()
+            );
+            throw e;
+        }
     }
 
     /**
-     * 메서드의 인자값에과 요청의 파라미터 값을 매핑하여 파마미터 정보를 생성합니다.
+     * 메서드의 인자값과 요청의 파라미터 값을 매핑하여 파마미터 정보를 생성합니다.
      * @param joinPoint 호출된 메서드의 정보를 제공하는 JoinPoint 객체
      * @return 매핑된 파라미터 정보
      */
@@ -161,7 +186,7 @@ public class LoggingAspect {
         Authentication auth = SecurityContextHolder.getContext() != null ? SecurityContextHolder.getContext().getAuthentication() : null;
 
         if(Objects.isNull(auth) || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal()))
-            return "X";
+            return "XXX";
 
         Object principal = auth.getPrincipal();
         if (principal instanceof UserDetail userDetail) {
@@ -173,7 +198,7 @@ public class LoggingAspect {
     /**
      * 사용자 요청에 포함되어 있는 Header 값들 반환합니다.
      * @param request 사용자 요청
-     * @return 요청에 포함된 Header값
+     * @return 요청에 포함된 Header 값
      */
     private Map<String, String> getHeader(HttpServletRequest request) {
         Map<String, String> headers = new HashMap<>();
