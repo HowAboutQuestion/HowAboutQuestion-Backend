@@ -13,6 +13,7 @@ import lombok.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          cod0216           최초생성<br>
+ * 26.04.28          cod0216           Refresh Token 컬럼 및 갱신 메서드 추가<br>
  */
 @Entity
 @Getter
@@ -31,4 +32,15 @@ public class UserEntity extends UserMetaEntity {
     @Column(nullable = false)
     private String password;
     private String profile;
+
+    @Column(name = "refresh_token", length = 512)
+    private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void clearRefreshToken() {
+        this.refreshToken = null;
+    }
 }

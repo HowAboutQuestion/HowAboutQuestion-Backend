@@ -1,17 +1,16 @@
 package com.howaboutquestion.backend.domain.auth.service;
 
 import com.howaboutquestion.backend.domain.auth.dto.response.JwtTokenResponse;
-import com.howaboutquestion.backend.domain.auth.dto.response.UserLoginResponse;
 import com.howaboutquestion.backend.domain.user.dto.resopnse.UserInfoResponse;
-import com.howaboutquestion.backend.global.service.RedisService;
+import com.howaboutquestion.backend.domain.user.entity.UserEntity;
+import com.howaboutquestion.backend.domain.user.repository.UserRepository;
+import com.howaboutquestion.backend.global.common.StatusCode;
+import com.howaboutquestion.backend.global.error.CustomException;
 import com.howaboutquestion.backend.global.util.JwtUtility;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.UUID;
 
 /**
@@ -24,6 +23,7 @@ import java.util.UUID;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          cod0216           최초 생성 <br>
+ * 26.04.28          cod0216           Refresh Token을 User 컬럼에 저장하도록 수정<br>
  */
 
 @Service
@@ -32,14 +32,8 @@ import java.util.UUID;
 public class TokenService {
 
 
-    private final RedisService redisService;
+    private final UserRepository userRepository;
     private final JwtUtility jwtUtility;
-
-    @Value("${jwt.refresh-token-validateTime}")
-    private long refreshTokenValidity;
-
-    private static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String HEADER_BEARER = "Bearer ";
 
     /**
      * 회원의 정보로 토큰을 생성 하고 저장하여 반환합니다.
@@ -51,18 +45,20 @@ public class TokenService {
 
         String accessToken = jwtUtility.createAccessToken(user.getId(), user.getEmail(), user.getName(), user.getUserType(), user.getProfile(), tokenID);
         String refreshToken = jwtUtility.createRefreshToken(user.getId(), user.getEmail(), user.getName(), user.getUserType(), user.getProfile(), tokenID);
-        saveRefreshToken(user, refreshToken);
+        saveRefreshToken(user.getId(), refreshToken);
         return JwtTokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     /**
-     * Redis에 RefreshToken을 저장합니다.
-     * @param key Redis에 사용할 Key(UserId)
-     * @param refreshToken Redis의 Key에 매핑 될 RefreshToken 값
+     * DB에 RefreshToken을 저장합니다.
+     * @param userId 사용자 Id
+     * @param refreshToken 저장할 RefreshToken 값
      */
-
-    private void saveRefreshToken(UserInfoResponse key, String refreshToken){
-        redisService.saveRefreshToken(key.getId().toString(), refreshToken, Duration.ofMillis(refreshTokenValidity));
+    private void saveRefreshToken(Long userId, String refreshToken){
+        UserEntity userEntity = userRepository.findById(Math.toIntExact(userId))
+                .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_USER));
+        userEntity.updateRefreshToken(refreshToken);
+        userRepository.save(userEntity);
     }
 
 }
