@@ -1,5 +1,6 @@
 package com.howaboutquestion.backend.domain.exam.entity;
 
+import com.howaboutquestion.backend.domain.book.entity.BookEntity;
 import com.howaboutquestion.backend.domain.dailyhistory.entity.DailyHistoryEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
  * 26.04.30          cod0216             PostgreSQL 매핑 호환성 정리<br>
+ * 26.04.30          cod0216             book_id 연관관계 매핑으로 정리<br>
  */
 @Entity
 @Getter
@@ -56,6 +58,7 @@ public class ExamEntity {
     @Column(columnDefinition = "TEXT")
     private String tag;
 
-    @Column(name = "book_id", nullable = false)
-    private Integer bookId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private BookEntity book;
 }
