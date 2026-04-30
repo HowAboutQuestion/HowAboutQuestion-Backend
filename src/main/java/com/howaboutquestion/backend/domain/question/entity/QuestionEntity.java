@@ -25,6 +25,7 @@ import java.util.Set;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
+ * 26.04.30          cod0216             PostgreSQL 매핑 호환성 정리<br>
  */
 @Entity
 @Getter
@@ -39,7 +40,7 @@ public abstract class QuestionEntity {
     @Id
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
+    @Column(nullable = false)
     private Integer id;
 
     @CreatedDate

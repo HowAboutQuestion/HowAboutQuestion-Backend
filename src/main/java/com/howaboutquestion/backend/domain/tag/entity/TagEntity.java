@@ -13,6 +13,7 @@ import lombok.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
+ * 26.04.30          cod0216             PostgreSQL 매핑 호환성 정리<br>
  */
 @Entity
 @Getter
@@ -26,7 +27,7 @@ public class TagEntity {
     @Id
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, columnDefinition = "BIGINT UNSIGNED")
+    @Column(nullable = false)
     private Long id;
 
     @Column(nullable = false, length = 31, unique = true)
