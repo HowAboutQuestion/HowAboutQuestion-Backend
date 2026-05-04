@@ -1,5 +1,6 @@
 package com.howaboutquestion.backend.domain.exam.entity;
 
+import com.howaboutquestion.backend.domain.book.entity.BookEntity;
 import com.howaboutquestion.backend.domain.dailyhistory.entity.DailyHistoryEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,8 @@ import java.time.LocalDateTime;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
+ * 26.04.30          cod0216             PostgreSQL 매핑 호환성 정리<br>
+ * 26.04.30          cod0216             book_id 연관관계 매핑으로 정리<br>
  */
 @Entity
 @Getter
@@ -32,7 +35,7 @@ public class ExamEntity {
     @Id
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
+    @Column(nullable = false)
     private Integer id;
 
     @CreatedDate
@@ -52,9 +55,10 @@ public class ExamEntity {
     @Column(nullable = false, precision = 5, scale = 2)
     private BigDecimal rate;
 
-    @Column(columnDefinition = "TEXT", length = 255)
+    @Column(columnDefinition = "TEXT")
     private String tag;
 
-    @Column(name = "book_id", nullable = false, columnDefinition = "INT UNSIGNED")
-    private Integer bookId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private BookEntity book;
 }

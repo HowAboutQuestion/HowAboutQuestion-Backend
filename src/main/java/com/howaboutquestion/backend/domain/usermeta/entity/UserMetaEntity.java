@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.12          cod0216           최초생성<br>
+ * 26.04.30          cod0216           PostgreSQL 매핑 호환성 정리<br>
+ * 26.04.30          cod0216           user_type 중복 컬럼 매핑 제거<br>
  */
 
 @Entity
@@ -33,7 +35,7 @@ import java.time.LocalDateTime;
 public abstract class UserMetaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
+    @Column(nullable = false)
     private Integer id;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -42,8 +44,15 @@ public abstract class UserMetaEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_type", insertable = false, updatable = false)
-    private UserType userType;
+    @Transient
+    public UserType getUserType() {
+        if (this instanceof UserEntity) {
+            return UserType.USER;
+        }
+        if (this instanceof GuestEntity) {
+            return UserType.GUEST;
+        }
+        return null;
+    }
 
 }

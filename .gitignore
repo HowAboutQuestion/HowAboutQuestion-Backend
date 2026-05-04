@@ -49,7 +49,6 @@ out/
 logs/
 # local docs and rules
 AGENTS.md
-README.md
 docs/
 rule/
 
