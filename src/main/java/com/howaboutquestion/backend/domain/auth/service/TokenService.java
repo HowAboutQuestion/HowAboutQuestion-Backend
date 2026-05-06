@@ -17,14 +17,14 @@ import java.util.UUID;
 /**
  * packageName    : com.howaboutquestion.backend.domain.auth.service<br>
  * fileName       : TokenService.java<br>
- * author         : cod0216 <br>
+ * author         : eunchang <br>
  * date           : 2025.07.13<br>
  * description    : JWT 토큰을 저장하거나 담는 Service 클래스입니다 <br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
- * 25.07.13          cod0216           최초 생성 <br>
- * 26.04.28          cod0216           Refresh Token을 User 컬럼에 저장하도록 수정<br>
+ * 25.07.13          eunchang           최초 생성 <br>
+ * 26.04.28          eunchang           Refresh Token을 User 컬럼에 저장하도록 수정<br>
  * 26.05.06          eunchang          로그아웃 및 토큰 재발급 로직 추가<br>
  */
 

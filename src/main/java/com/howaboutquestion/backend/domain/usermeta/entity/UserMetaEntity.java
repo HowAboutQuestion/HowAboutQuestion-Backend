@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 /**
  * packageName    : com.howaboutquestion.backend.domain.usermeta.entity<br>
  * fileName       : UserMetaEntity.java<br>
- * author         : cod0216<br>
+ * author         : eunchang<br>
  * date           : 2025-07-12<br>
  * description    : User Meta Entity 클래스입니다. <br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
- * 25.07.12          cod0216           최초생성<br>
- * 26.04.30          cod0216           PostgreSQL 매핑 호환성 정리<br>
- * 26.04.30          cod0216           user_type 중복 컬럼 매핑 제거<br>
+ * 25.07.12          eunchang           최초생성<br>
+ * 26.04.30          eunchang           PostgreSQL 매핑 호환성 정리<br>
+ * 26.04.30          eunchang           user_type 중복 컬럼 매핑 제거<br>
  */
 
 @Entity

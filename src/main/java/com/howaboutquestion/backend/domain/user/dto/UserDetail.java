@@ -17,14 +17,14 @@ import java.util.Collections;
 /**
  * packageName    : com.howaboutquestion.backend.domain.user.dto<br>
  * fileName       : UserDetail.java<br>
- * author         : cod0216 <br>
+ * author         : eunchang <br>
  * date           : 2025.07.13<br>
  * description    : Spring Security에서 사용자 정보를 나타내는 클래스입니다<br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
- * 25.07.13          cod0216           최초 생성 <br>
- * 25.07.16          cod0216           TokenUserInfo 클래스 추가 <br>
+ * 25.07.13          eunchang           최초 생성 <br>
+ * 25.07.16          eunchang           TokenUserInfo 클래스 추가 <br>
  */
 @Getter
 @Builder
