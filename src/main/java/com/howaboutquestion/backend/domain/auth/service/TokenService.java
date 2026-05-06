@@ -1,6 +1,7 @@
 package com.howaboutquestion.backend.domain.auth.service;
 
 import com.howaboutquestion.backend.domain.auth.dto.response.JwtTokenResponse;
+import com.howaboutquestion.backend.domain.user.dto.mapper.UserMapper;
 import com.howaboutquestion.backend.domain.user.dto.resopnse.UserInfoResponse;
 import com.howaboutquestion.backend.domain.user.entity.UserEntity;
 import com.howaboutquestion.backend.domain.user.repository.UserRepository;
@@ -24,6 +25,7 @@ import java.util.UUID;
  * -----------------------------------------------------------<br>
  * 25.07.13          cod0216           최초 생성 <br>
  * 26.04.28          cod0216           Refresh Token을 User 컬럼에 저장하도록 수정<br>
+ * 26.05.06          cod0216           로그아웃 및 토큰 재발급 로직 추가<br>
  */
 
 @Service
@@ -34,6 +36,7 @@ public class TokenService {
 
     private final UserRepository userRepository;
     private final JwtUtility jwtUtility;
+    private final UserMapper userMapper;
 
     /**
      * 회원의 정보로 토큰을 생성 하고 저장하여 반환합니다.
@@ -59,6 +62,39 @@ public class TokenService {
                 .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_USER));
         userEntity.updateRefreshToken(refreshToken);
         userRepository.save(userEntity);
+    }
+
+    /**
+     * DB에 저장된 RefreshToken을 제거합니다.
+     * @param userId 사용자 Id
+     */
+    public void clearRefreshToken(Long userId) {
+        UserEntity userEntity = findUserById(userId);
+        userEntity.clearRefreshToken();
+        userRepository.save(userEntity);
+    }
+
+    /**
+     * Refresh Token을 검증하고 새 토큰을 발급합니다.
+     * @param refreshToken Refresh Token 값
+     * @return 새로 발급된 토큰 정보
+     */
+    public JwtTokenResponse reissueTokens(String refreshToken) {
+        jwtUtility.validateToken(refreshToken);
+
+        Long userId = jwtUtility.getUserId(refreshToken);
+        UserEntity userEntity = findUserById(userId);
+
+        if (userEntity.getRefreshToken() == null || !userEntity.getRefreshToken().equals(refreshToken)) {
+            throw new CustomException(StatusCode.INVALID_TOKEN);
+        }
+
+        return generateTokens(userMapper.mapToUserInfoResponse(userEntity));
+    }
+
+    private UserEntity findUserById(Long userId) {
+        return userRepository.findById(Math.toIntExact(userId))
+                .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_USER));
     }
 
 }

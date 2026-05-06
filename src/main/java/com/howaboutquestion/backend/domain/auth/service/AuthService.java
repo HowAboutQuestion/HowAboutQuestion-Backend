@@ -1,5 +1,6 @@
 package com.howaboutquestion.backend.domain.auth.service;
 
+import com.howaboutquestion.backend.domain.auth.dto.request.RefreshTokenRequest;
 import com.howaboutquestion.backend.domain.auth.dto.request.UserLoginRequest;
 import com.howaboutquestion.backend.domain.auth.dto.request.UserRegisterRequest;
 import com.howaboutquestion.backend.domain.auth.dto.response.JwtTokenResponse;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          cod0216           최초 생성 <br>
+ * 26.05.06          cod0216           로그아웃 및 토큰 재발급 서비스 추가<br>
  */
 
 @Service
@@ -52,5 +54,21 @@ public class AuthService {
         return response;
     }
 
+    /**
+     * 로그아웃을 시도합니다.
+     * @param userId 로그인한 사용자 Id
+     */
+    public void logout(Long userId) {
+        tokenService.clearRefreshToken(userId);
+    }
+
+    /**
+     * Refresh Token으로 토큰 재발급을 시도합니다.
+     * @param request Refresh Token 요청 정보
+     * @return 재발급된 토큰 정보
+     */
+    public JwtTokenResponse refresh(RefreshTokenRequest request) {
+        return tokenService.reissueTokens(request.getRefreshToken());
+    }
 
 }
