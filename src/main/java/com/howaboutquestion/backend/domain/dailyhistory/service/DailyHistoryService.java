@@ -20,6 +20,7 @@ import java.time.LocalDate;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
+ * 26.05.06          eunchang          시험 결과 반영 메서드 추가<br>
  */
 @Service
 @Transactional
@@ -37,5 +38,9 @@ public class DailyHistoryService {
                         .solvedQuestion(0)
                         .rate(BigDecimal.ZERO)
                         .build()));
+    }
+
+    public void applyExamResult(DailyHistoryEntity dailyHistory, Integer correctQuestion, Integer solvedQuestion, BigDecimal rate) {
+        dailyHistory.applyExamResult(correctQuestion, solvedQuestion, rate);
     }
 }
