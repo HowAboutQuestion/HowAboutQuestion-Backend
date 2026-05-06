@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * -----------------------------------------------------------<br>
  * 25.07.13          eunchang           최초 생성 <br>
  * 26.05.06          eunchang           현재 사용자 프로필 조회 로직 추가<br>
+ * 26.05.06          eunchang           사용자 엔티티 조회 메서드 추가<br>
  */
 
 @Service
@@ -85,10 +86,20 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public UserInfoResponse getCurrentUserInfo(Long userId) {
-        UserEntity user = userRepository.findById(Math.toIntExact(userId))
-                .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_USER));
+        UserEntity user = findUserEntityById(userId);
 
         return userMapper.mapToUserInfoResponse(user);
+    }
+
+    /**
+     * 사용자 엔티티를 조회합니다.
+     * @param userId 사용자 Id
+     * @return 사용자 엔티티
+     */
+    @Transactional(readOnly = true)
+    public UserEntity findUserEntityById(Long userId) {
+        return userRepository.findById(Math.toIntExact(userId))
+                .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_USER));
     }
 
     /**

@@ -2,7 +2,7 @@ package com.howaboutquestion.backend.domain.book.controller;
 
 import com.howaboutquestion.backend.domain.book.dto.request.BookCreateRequest;
 import com.howaboutquestion.backend.domain.book.dto.request.BookUpdateRequest;
-import com.howaboutquestion.backend.domain.book.service.BookService;
+import com.howaboutquestion.backend.domain.book.service.BookComplexService;
 import com.howaboutquestion.backend.domain.user.dto.UserDetail;
 import com.howaboutquestion.backend.global.util.ResponseUtility;
 import jakarta.validation.Valid;
@@ -21,13 +21,14 @@ import org.springframework.web.bind.annotation.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
+ * 26.05.06          eunchang          BookComplexService 사용으로 변경<br>
  */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/books")
 public class BookController {
 
-    private final BookService bookService;
+    private final BookComplexService bookComplexService;
 
     @PostMapping
     public ResponseEntity<?> createBook(
@@ -35,14 +36,14 @@ public class BookController {
             @RequestBody @Valid BookCreateRequest request
     ) {
         return ResponseUtility.success(
-                bookService.createBook(Long.parseLong(userDetail.getUserId()), request),
+                bookComplexService.createBook(Long.parseLong(userDetail.getUserId()), request),
                 "문제집이 생성되었습니다."
         );
     }
 
     @GetMapping
     public ResponseEntity<?> getMyBooks(@AuthenticationPrincipal UserDetail userDetail) {
-        return ResponseUtility.success(bookService.getMyBooks(Long.parseLong(userDetail.getUserId())));
+        return ResponseUtility.success(bookComplexService.getMyBooks(Long.parseLong(userDetail.getUserId())));
     }
 
     @GetMapping("/{bookId}")
@@ -50,7 +51,7 @@ public class BookController {
             @AuthenticationPrincipal UserDetail userDetail,
             @PathVariable Integer bookId
     ) {
-        return ResponseUtility.success(bookService.getMyBookDetail(Long.parseLong(userDetail.getUserId()), bookId));
+        return ResponseUtility.success(bookComplexService.getMyBookDetail(Long.parseLong(userDetail.getUserId()), bookId));
     }
 
     @PutMapping("/{bookId}")
@@ -60,7 +61,7 @@ public class BookController {
             @RequestBody @Valid BookUpdateRequest request
     ) {
         return ResponseUtility.success(
-                bookService.updateBook(Long.parseLong(userDetail.getUserId()), bookId, request),
+                bookComplexService.updateBook(Long.parseLong(userDetail.getUserId()), bookId, request),
                 "문제집이 수정되었습니다."
         );
     }
@@ -70,7 +71,7 @@ public class BookController {
             @AuthenticationPrincipal UserDetail userDetail,
             @PathVariable Integer bookId
     ) {
-        bookService.deleteBook(Long.parseLong(userDetail.getUserId()), bookId);
+        bookComplexService.deleteBook(Long.parseLong(userDetail.getUserId()), bookId);
         return ResponseUtility.success(null, "문제집이 삭제되었습니다.");
     }
 }
