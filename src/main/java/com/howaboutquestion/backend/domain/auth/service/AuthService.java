@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          cod0216           최초 생성 <br>
- * 26.05.06          cod0216           로그아웃 및 토큰 재발급 서비스 추가<br>
+ * 26.05.06          eunchang          로그아웃 및 토큰 재발급 서비스 추가<br>
  */
 
 @Service

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          cod0216           최초 생성 <br>
- * 26.05.06          cod0216           로그아웃 및 토큰 재발급 API 추가<br>
+ * 26.05.06          eunchang          로그아웃 및 토큰 재발급 API 추가<br>
  */
 
 @RestController
