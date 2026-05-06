@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.13          eunchang           최초 생성 <br>
+ * 26.05.06          eunchang           현재 사용자 프로필 조회 로직 추가<br>
  */
 
 @Service
@@ -75,6 +76,19 @@ public class UserService {
             throw new CustomException(StatusCode.INTERNAL_SERVER_ERROR);
         }
         return userMapper.mapToUserInfoResponse(origin);
+    }
+
+    /**
+     * 현재 로그인한 사용자의 정보를 조회합니다.
+     * @param userId 로그인한 사용자 Id
+     * @return 사용자 정보
+     */
+    @Transactional(readOnly = true)
+    public UserInfoResponse getCurrentUserInfo(Long userId) {
+        UserEntity user = userRepository.findById(Math.toIntExact(userId))
+                .orElseThrow(() -> new CustomException(StatusCode.NOT_FOUND_USER));
+
+        return userMapper.mapToUserInfoResponse(user);
     }
 
     /**

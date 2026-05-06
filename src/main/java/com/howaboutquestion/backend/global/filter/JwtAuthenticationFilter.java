@@ -35,6 +35,7 @@ import java.util.Objects;
  * 25.07.16          eunchang           DB 조회 로직 개선<br>
  * 25.08.01          eunchang           Url get 메서드 추가<br>
  * 26.05.06          eunchang            토큰 재발급 공개 경로 추가<br>
+ * 26.05.06          eunchang           내 정보 조회 인증 경로 추가<br>
  */
 
 @Component
@@ -51,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     };
 
     private static final String[] NOT_ALLOW_URLS = new String[] {
-            "/", "/api/auths/logout",
+            "/", "/api/auths/logout", "/api/users/me",
     };
 
 
