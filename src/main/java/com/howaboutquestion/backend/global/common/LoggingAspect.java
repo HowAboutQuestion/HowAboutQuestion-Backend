@@ -23,14 +23,14 @@ import java.util.Objects;
 /**
  * packageName    : com.howaboutquestion.backend.global.common<br>
  * fileName       : LoggingAspect.java<br>
- * author         : cod0216 <br>
+ * author         : eunchang <br>
  * date           : 2025.08.03<br>
  * description    : 요청과 응답 수행 과정을 추적하는 로깅 Aspect 클래스입니다. <br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
- * 25.08.03          cod0216           최초 생성 <br>
- * 25.08.06          cod0216           의도한 Exception 로그 Info 변경 <br>
+ * 25.08.03          eunchang           최초 생성 <br>
+ * 25.08.06          eunchang           의도한 Exception 로그 Info 변경 <br>
  */
 
 @Slf4j

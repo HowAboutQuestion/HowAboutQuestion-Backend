@@ -9,7 +9,7 @@ package com.howaboutquestion.backend.domain.usermeta.entity;
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
- * 25.07.12          cod0216           최초생성<br>
+ * 25.07.12          eunchang           최초생성<br>
  */
 public enum UserType {
     USER, GUEST

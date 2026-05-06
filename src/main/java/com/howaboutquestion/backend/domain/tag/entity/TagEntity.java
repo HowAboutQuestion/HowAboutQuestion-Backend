@@ -13,7 +13,7 @@ import lombok.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
- * 26.04.30          cod0216             PostgreSQL 매핑 호환성 정리<br>
+ * 26.04.30          eunchang             PostgreSQL 매핑 호환성 정리<br>
  */
 @Entity
 @Getter
