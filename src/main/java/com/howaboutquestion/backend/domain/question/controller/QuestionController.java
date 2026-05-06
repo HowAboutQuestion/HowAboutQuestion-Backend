@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
  * 26.05.06          eunchang          QuestionComplexService 사용으로 변경<br>
+ * 26.05.06          eunchang          검색/자동완성/태그 조회 엔드포인트 추가<br>
  */
 @RestController
 @RequiredArgsConstructor
@@ -76,5 +77,43 @@ public class QuestionController {
     ) {
         questionComplexService.deleteQuestion(Long.parseLong(userDetail.getUserId()), questionId);
         return ResponseUtility.success(null, "문제가 삭제되었습니다.");
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchQuestions(
+            @AuthenticationPrincipal UserDetail userDetail,
+            @RequestParam String keyword,
+            @RequestParam(required = false) Integer bookId
+    ) {
+        return ResponseUtility.success(
+                questionComplexService.searchQuestions(Long.parseLong(userDetail.getUserId()), keyword, bookId)
+        );
+    }
+
+    @GetMapping("/autocomplete")
+    public ResponseEntity<?> autocompleteQuestions(
+            @AuthenticationPrincipal UserDetail userDetail,
+            @RequestParam String keyword,
+            @RequestParam(required = false) Integer bookId
+    ) {
+        return ResponseUtility.success(
+                questionComplexService.autocompleteTitles(Long.parseLong(userDetail.getUserId()), keyword, bookId)
+        );
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity<?> getQuestionTags() {
+        return ResponseUtility.success(questionComplexService.getTagNames());
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterQuestionsByTag(
+            @AuthenticationPrincipal UserDetail userDetail,
+            @RequestParam String tag,
+            @RequestParam(required = false) Integer bookId
+    ) {
+        return ResponseUtility.success(
+                questionComplexService.getQuestionsByTag(Long.parseLong(userDetail.getUserId()), tag, bookId)
+        );
     }
 }
