@@ -19,6 +19,7 @@ import java.time.LocalDate;
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
  * 26.04.30          eunchang             PostgreSQL 매핑 호환성 정리<br>
+ * 26.05.06          eunchang             시험 결과 누적 메서드 추가<br>
  */
 @Entity
 @Getter
@@ -50,4 +51,10 @@ public class DailyHistoryEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserMetaEntity user;
+
+    public void applyExamResult(Integer correctQuestion, Integer solvedQuestion, BigDecimal rate) {
+        this.correctQuestion = correctQuestion;
+        this.solvedQuestion = solvedQuestion;
+        this.rate = rate;
+    }
 }
