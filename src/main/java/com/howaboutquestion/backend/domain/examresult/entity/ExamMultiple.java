@@ -4,6 +4,7 @@ package com.howaboutquestion.backend.domain.examresult.entity;
 import com.howaboutquestion.backend.domain.question.entity.MultipleAnswer;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * packageName    : com.howaboutquestion.backend.domain.examresult.entity<br>
@@ -15,10 +16,11 @@ import lombok.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
+ * 26.05.06          eunchang            상속 빌더 적용<br>
  */
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @Table(name = "tb_exam_multiple")
 @PrimaryKeyJoinColumn(name = "id")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

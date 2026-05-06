@@ -1,6 +1,10 @@
 package com.howaboutquestion.backend.domain.exam.dto.mapper;
 
 import com.howaboutquestion.backend.domain.exam.dto.response.ExamStartQuestionResponse;
+import com.howaboutquestion.backend.domain.exam.dto.response.ExamResultItemResponse;
+import com.howaboutquestion.backend.domain.examresult.entity.ExamMultiple;
+import com.howaboutquestion.backend.domain.examresult.entity.ExamResultEntity;
+import com.howaboutquestion.backend.domain.examresult.entity.ExamSubjective;
 import com.howaboutquestion.backend.domain.question.entity.QuestionEntity;
 import com.howaboutquestion.backend.domain.question.entity.QuestionMultipleEntity;
 import org.mapstruct.Mapper;
@@ -34,6 +38,31 @@ public interface ExamMapper {
                     .selectThree(multipleQuestion.getSelectThree())
                     .selectFour(multipleQuestion.getSelectFour())
                     .selectFive(multipleQuestion.getSelectFive());
+        }
+
+        return builder.build();
+    }
+
+    default ExamResultItemResponse mapToExamResultItemResponse(ExamResultEntity result) {
+        ExamResultItemResponse.ExamResultItemResponseBuilder builder = ExamResultItemResponse.builder()
+                .examResultId(result.getId())
+                .type(result.getType())
+                .title(result.getTitle())
+                .description(result.getDescription())
+                .picture(result.getPicture())
+                .checkCorrect(result.getCheckCorrect());
+
+        if (result instanceof ExamMultiple multipleResult) {
+            builder.selectOne(multipleResult.getSelectOne())
+                    .selectTwo(multipleResult.getSelectTwo())
+                    .selectThree(multipleResult.getSelectThree())
+                    .selectFour(multipleResult.getSelectFour())
+                    .selectFive(multipleResult.getSelectFive())
+                    .multipleAnswer(multipleResult.getAnswer());
+        }
+
+        if (result instanceof ExamSubjective subjectiveResult) {
+            builder.subjectiveAnswer(subjectiveResult.getAnswer());
         }
 
         return builder.build();
