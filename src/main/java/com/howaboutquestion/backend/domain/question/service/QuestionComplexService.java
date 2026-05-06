@@ -7,6 +7,7 @@ import com.howaboutquestion.backend.domain.question.dto.request.QuestionCreateRe
 import com.howaboutquestion.backend.domain.question.dto.request.QuestionUpdateRequest;
 import com.howaboutquestion.backend.domain.question.dto.response.QuestionResponse;
 import com.howaboutquestion.backend.domain.question.entity.QuestionEntity;
+import com.howaboutquestion.backend.domain.tag.service.TagService;
 import com.howaboutquestion.backend.global.common.StatusCode;
 import com.howaboutquestion.backend.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.List;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
+ * 26.05.06          eunchang          검색/자동완성/태그 조회 기능 추가<br>
  */
 @Service
 @Transactional
@@ -34,6 +36,7 @@ public class QuestionComplexService {
     private final QuestionService questionService;
     private final BookComplexService bookComplexService;
     private final QuestionMapper questionMapper;
+    private final TagService tagService;
 
     public QuestionResponse createQuestion(Long userId, QuestionCreateRequest request) {
         BookEntity book = bookComplexService.findOwnedBook(userId, request.getBookId());
@@ -67,6 +70,63 @@ public class QuestionComplexService {
     }
 
     @Transactional(readOnly = true)
+    public List<QuestionResponse> searchQuestions(Long userId, String keyword, Integer bookId) {
+        validateKeyword(keyword);
+
+        if (bookId != null) {
+            bookComplexService.findOwnedBook(userId, bookId);
+            return questionService.searchQuestions(userId, bookId, keyword)
+                    .stream()
+                    .map(questionMapper::mapToQuestionResponse)
+                    .toList();
+        }
+
+        return questionService.searchQuestions(userId, keyword)
+                .stream()
+                .map(questionMapper::mapToQuestionResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> autocompleteTitles(Long userId, String keyword, Integer bookId) {
+        validateKeyword(keyword);
+
+        if (bookId != null) {
+            bookComplexService.findOwnedBook(userId, bookId);
+            return questionService.autocompleteTitles(userId, bookId, keyword).stream()
+                    .limit(10)
+                    .toList();
+        }
+
+        return questionService.autocompleteTitles(userId, keyword).stream()
+                .limit(10)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getTagNames() {
+        return tagService.getAllTagNames();
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionResponse> getQuestionsByTag(Long userId, String tagName, Integer bookId) {
+        validateKeyword(tagName);
+
+        if (bookId != null) {
+            bookComplexService.findOwnedBook(userId, bookId);
+            return questionService.getQuestionsByTag(userId, bookId, tagName)
+                    .stream()
+                    .map(questionMapper::mapToQuestionResponse)
+                    .toList();
+        }
+
+        return questionService.getQuestionsByTag(userId, tagName)
+                .stream()
+                .map(questionMapper::mapToQuestionResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public QuestionEntity findOwnedQuestion(Long userId, Integer questionId) {
         QuestionEntity question = questionService.findQuestionById(questionId);
 
@@ -75,5 +135,11 @@ public class QuestionComplexService {
         }
 
         return question;
+    }
+
+    private void validateKeyword(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            throw new CustomException(StatusCode.INVALID_PARAMETER);
+        }
     }
 }

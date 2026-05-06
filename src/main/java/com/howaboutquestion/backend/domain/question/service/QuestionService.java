@@ -24,6 +24,7 @@ import java.util.List;
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
  * 26.05.06          eunchang          ComplexService 하위 도메인 서비스로 역할 정리<br>
+ * 26.05.06          eunchang          검색/자동완성/태그 필터 메서드 추가<br>
  */
 @Service
 @Transactional
@@ -110,6 +111,36 @@ public class QuestionService {
 
     public void deleteQuestion(QuestionEntity question) {
         questionRepository.delete(question);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionEntity> searchQuestions(Long userId, String keyword) {
+        return questionRepository.searchByUserId(userId, keyword);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionEntity> searchQuestions(Long userId, Integer bookId, String keyword) {
+        return questionRepository.searchByUserIdAndBookId(userId, bookId, keyword);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> autocompleteTitles(Long userId, String keyword) {
+        return questionRepository.autocompleteTitlesByUserId(userId, keyword);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> autocompleteTitles(Long userId, Integer bookId, String keyword) {
+        return questionRepository.autocompleteTitlesByUserIdAndBookId(userId, bookId, keyword);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionEntity> getQuestionsByTag(Long userId, String tagName) {
+        return questionRepository.findAllByUserIdAndTagName(userId, tagName);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionEntity> getQuestionsByTag(Long userId, Integer bookId, String tagName) {
+        return questionRepository.findAllByUserIdAndBookIdAndTagName(userId, bookId, tagName);
     }
 
     private void validateRequestByType(

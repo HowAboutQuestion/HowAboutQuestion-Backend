@@ -8,6 +8,7 @@ import com.howaboutquestion.backend.domain.question.dto.request.QuestionCreateRe
 import com.howaboutquestion.backend.domain.question.dto.request.QuestionUpdateRequest;
 import com.howaboutquestion.backend.domain.question.dto.response.QuestionResponse;
 import com.howaboutquestion.backend.domain.question.entity.*;
+import com.howaboutquestion.backend.domain.tag.service.TagService;
 import com.howaboutquestion.backend.domain.user.entity.UserEntity;
 import com.howaboutquestion.backend.global.common.StatusCode;
 import com.howaboutquestion.backend.global.error.CustomException;
@@ -37,6 +38,9 @@ class QuestionComplexServiceTest {
 
     @Mock
     private QuestionMapper questionMapper;
+
+    @Mock
+    private TagService tagService;
 
     @InjectMocks
     private QuestionComplexService questionComplexService;
@@ -154,6 +158,72 @@ class QuestionComplexServiceTest {
         questionComplexService.deleteQuestion(1L, 100);
 
         verify(questionService).deleteQuestion(question);
+    }
+
+    @DisplayName("문제 검색에 성공한다")
+    @Test
+    void searchQuestionsReturnsMappedResponses() {
+        UserEntity user = createUserEntity(1);
+        BookEntity book = createBookEntity(user);
+        QuestionEntity question = createMultipleQuestion(book);
+        QuestionResponse response = createQuestionResponse();
+
+        given(questionService.searchQuestions(1L, "객관식")).willReturn(List.of(question));
+        given(questionMapper.mapToQuestionResponse(question)).willReturn(response);
+
+        List<QuestionResponse> results = questionComplexService.searchQuestions(1L, "객관식", null);
+
+        assertThat(results).containsExactly(response);
+    }
+
+    @DisplayName("문제집 범위 자동완성에 성공한다")
+    @Test
+    void autocompleteTitlesReturnsLimitedTitles() {
+        UserEntity user = createUserEntity(1);
+        BookEntity book = createBookEntity(user);
+
+        given(bookComplexService.findOwnedBook(1L, 10)).willReturn(book);
+        given(questionService.autocompleteTitles(1L, 10, "객"))
+                .willReturn(List.of("객관식 문제", "객체지향 문제"));
+
+        List<String> results = questionComplexService.autocompleteTitles(1L, "객", 10);
+
+        assertThat(results).containsExactly("객관식 문제", "객체지향 문제");
+    }
+
+    @DisplayName("태그 목록 조회에 성공한다")
+    @Test
+    void getTagNamesReturnsTagList() {
+        given(tagService.getAllTagNames()).willReturn(List.of("자료구조", "알고리즘"));
+
+        List<String> results = questionComplexService.getTagNames();
+
+        assertThat(results).containsExactly("자료구조", "알고리즘");
+    }
+
+    @DisplayName("태그 기반 문제 필터링에 성공한다")
+    @Test
+    void getQuestionsByTagReturnsMappedResponses() {
+        UserEntity user = createUserEntity(1);
+        BookEntity book = createBookEntity(user);
+        QuestionEntity question = createMultipleQuestion(book);
+        QuestionResponse response = createQuestionResponse();
+
+        given(questionService.getQuestionsByTag(1L, "자료구조")).willReturn(List.of(question));
+        given(questionMapper.mapToQuestionResponse(question)).willReturn(response);
+
+        List<QuestionResponse> results = questionComplexService.getQuestionsByTag(1L, "자료구조", null);
+
+        assertThat(results).containsExactly(response);
+    }
+
+    @DisplayName("빈 검색어로 검색하면 예외를 반환한다")
+    @Test
+    void searchQuestionsThrowsWhenKeywordBlank() {
+        assertThatThrownBy(() -> questionComplexService.searchQuestions(1L, " ", null))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(StatusCode.INVALID_PARAMETER);
     }
 
     private UserEntity createUserEntity(int id) {
