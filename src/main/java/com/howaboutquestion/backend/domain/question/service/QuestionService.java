@@ -1,10 +1,8 @@
 package com.howaboutquestion.backend.domain.question.service;
 
 import com.howaboutquestion.backend.domain.book.entity.BookEntity;
-import com.howaboutquestion.backend.domain.book.repository.BookRepository;
 import com.howaboutquestion.backend.domain.question.dto.request.QuestionCreateRequest;
 import com.howaboutquestion.backend.domain.question.dto.request.QuestionUpdateRequest;
-import com.howaboutquestion.backend.domain.question.dto.response.QuestionResponse;
 import com.howaboutquestion.backend.domain.question.entity.*;
 import com.howaboutquestion.backend.domain.question.repository.QuestionRepository;
 import com.howaboutquestion.backend.global.common.StatusCode;
@@ -20,11 +18,12 @@ import java.util.List;
  * fileName       : QuestionService.java<br>
  * author         : eunchang<br>
  * date           : 2026.05.06<br>
- * description    : 문제 관련 서비스 로직을 수행하는 클래스입니다.<br>
+ * description    : 문제 도메인 서비스 로직을 수행하는 클래스입니다.<br>
  * ===========================================================<br>
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
+ * 26.05.06          eunchang          ComplexService 하위 도메인 서비스로 역할 정리<br>
  */
 @Service
 @Transactional
@@ -32,10 +31,8 @@ import java.util.List;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final BookRepository bookRepository;
 
-    public QuestionResponse createQuestion(Long userId, QuestionCreateRequest request) {
-        BookEntity book = findOwnedBook(userId, request.getBookId());
+    public QuestionEntity createQuestion(BookEntity book, QuestionCreateRequest request) {
         validateRequestByType(request.getType(), request.getSelectOne(), request.getMultipleAnswer(), request.getSubjectiveAnswer());
 
         QuestionEntity question = switch (request.getType()) {
@@ -64,25 +61,21 @@ public class QuestionService {
                     .build();
         };
 
-        return toResponse(questionRepository.save(question));
+        return questionRepository.save(question);
     }
 
     @Transactional(readOnly = true)
-    public List<QuestionResponse> getQuestions(Long userId, Integer bookId) {
-        findOwnedBook(userId, bookId);
-        return questionRepository.findAllByBookIdOrderByCreatedAtDesc(bookId)
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public List<QuestionEntity> getQuestions(Integer bookId) {
+        return questionRepository.findAllByBookIdOrderByCreatedAtDesc(bookId);
     }
 
     @Transactional(readOnly = true)
-    public QuestionResponse getQuestionDetail(Long userId, Integer questionId) {
-        return toResponse(findOwnedQuestion(userId, questionId));
+    public QuestionEntity findQuestionById(Integer questionId) {
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomException(StatusCode.RESOURCE_NOT_FOUND));
     }
 
-    public QuestionResponse updateQuestion(Long userId, Integer questionId, QuestionUpdateRequest request) {
-        QuestionEntity question = findOwnedQuestion(userId, questionId);
+    public void updateQuestion(QuestionEntity question, QuestionUpdateRequest request) {
         validateRequestByType(request.getType(), request.getSelectOne(), request.getMultipleAnswer(), request.getSubjectiveAnswer());
 
         if (question instanceof QuestionMultipleEntity multipleQuestion && request.getType() == QuestionType.MULTIPLE) {
@@ -98,7 +91,7 @@ public class QuestionService {
                     request.getSelectFive(),
                     request.getMultipleAnswer()
             );
-            return toResponse(multipleQuestion);
+            return;
         }
 
         if (question instanceof QuestionSubjectiveEntity subjectiveQuestion && request.getType() == QuestionType.SUBJECTIVE) {
@@ -109,37 +102,14 @@ public class QuestionService {
                     request.getLevel(),
                     request.getSubjectiveAnswer()
             );
-            return toResponse(subjectiveQuestion);
+            return;
         }
 
         throw new CustomException(StatusCode.INVALID_PARAMETER);
     }
 
-    public void deleteQuestion(Long userId, Integer questionId) {
-        QuestionEntity question = findOwnedQuestion(userId, questionId);
+    public void deleteQuestion(QuestionEntity question) {
         questionRepository.delete(question);
-    }
-
-    private BookEntity findOwnedBook(Long userId, Integer bookId) {
-        BookEntity book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new CustomException(StatusCode.RESOURCE_NOT_FOUND));
-
-        if (!book.getUser().getId().equals(Math.toIntExact(userId))) {
-            throw new CustomException(StatusCode.NO_USER_PERMISSION);
-        }
-
-        return book;
-    }
-
-    private QuestionEntity findOwnedQuestion(Long userId, Integer questionId) {
-        QuestionEntity question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new CustomException(StatusCode.RESOURCE_NOT_FOUND));
-
-        if (!question.getBook().getUser().getId().equals(Math.toIntExact(userId))) {
-            throw new CustomException(StatusCode.NO_USER_PERMISSION);
-        }
-
-        return question;
     }
 
     private void validateRequestByType(
@@ -164,31 +134,4 @@ public class QuestionService {
         return value == null || value.isBlank();
     }
 
-    private QuestionResponse toResponse(QuestionEntity question) {
-        QuestionResponse.QuestionResponseBuilder builder = QuestionResponse.builder()
-                .id(question.getId())
-                .bookId(question.getBook().getId())
-                .title(question.getTitle())
-                .description(question.getDescription())
-                .picture(question.getPicture())
-                .level(question.getLevel())
-                .type(question.getType())
-                .createdAt(question.getCreatedAt())
-                .updatedAt(question.getUpdatedAt());
-
-        if (question instanceof QuestionMultipleEntity multipleQuestion) {
-            builder.selectOne(multipleQuestion.getSelectOne())
-                    .selectTwo(multipleQuestion.getSelectTwo())
-                    .selectThree(multipleQuestion.getSelectThree())
-                    .selectFour(multipleQuestion.getSelectFour())
-                    .selectFive(multipleQuestion.getSelectFive())
-                    .multipleAnswer(multipleQuestion.getAnswer());
-        }
-
-        if (question instanceof QuestionSubjectiveEntity subjectiveQuestion) {
-            builder.subjectiveAnswer(subjectiveQuestion.getAnswer());
-        }
-
-        return builder.build();
-    }
 }

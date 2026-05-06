@@ -2,7 +2,7 @@ package com.howaboutquestion.backend.domain.question.controller;
 
 import com.howaboutquestion.backend.domain.question.dto.request.QuestionCreateRequest;
 import com.howaboutquestion.backend.domain.question.dto.request.QuestionUpdateRequest;
-import com.howaboutquestion.backend.domain.question.service.QuestionService;
+import com.howaboutquestion.backend.domain.question.service.QuestionComplexService;
 import com.howaboutquestion.backend.domain.user.dto.UserDetail;
 import com.howaboutquestion.backend.global.util.ResponseUtility;
 import jakarta.validation.Valid;
@@ -21,13 +21,14 @@ import org.springframework.web.bind.annotation.*;
  * DATE              AUTHOR             NOTE<br>
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
+ * 26.05.06          eunchang          QuestionComplexService 사용으로 변경<br>
  */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/questions")
 public class QuestionController {
 
-    private final QuestionService questionService;
+    private final QuestionComplexService questionComplexService;
 
     @PostMapping
     public ResponseEntity<?> createQuestion(
@@ -35,7 +36,7 @@ public class QuestionController {
             @RequestBody @Valid QuestionCreateRequest request
     ) {
         return ResponseUtility.success(
-                questionService.createQuestion(Long.parseLong(userDetail.getUserId()), request),
+                questionComplexService.createQuestion(Long.parseLong(userDetail.getUserId()), request),
                 "문제가 생성되었습니다."
         );
     }
@@ -45,7 +46,7 @@ public class QuestionController {
             @AuthenticationPrincipal UserDetail userDetail,
             @RequestParam Integer bookId
     ) {
-        return ResponseUtility.success(questionService.getQuestions(Long.parseLong(userDetail.getUserId()), bookId));
+        return ResponseUtility.success(questionComplexService.getQuestions(Long.parseLong(userDetail.getUserId()), bookId));
     }
 
     @GetMapping("/{questionId}")
@@ -53,7 +54,7 @@ public class QuestionController {
             @AuthenticationPrincipal UserDetail userDetail,
             @PathVariable Integer questionId
     ) {
-        return ResponseUtility.success(questionService.getQuestionDetail(Long.parseLong(userDetail.getUserId()), questionId));
+        return ResponseUtility.success(questionComplexService.getQuestionDetail(Long.parseLong(userDetail.getUserId()), questionId));
     }
 
     @PutMapping("/{questionId}")
@@ -63,7 +64,7 @@ public class QuestionController {
             @RequestBody @Valid QuestionUpdateRequest request
     ) {
         return ResponseUtility.success(
-                questionService.updateQuestion(Long.parseLong(userDetail.getUserId()), questionId, request),
+                questionComplexService.updateQuestion(Long.parseLong(userDetail.getUserId()), questionId, request),
                 "문제가 수정되었습니다."
         );
     }
@@ -73,7 +74,7 @@ public class QuestionController {
             @AuthenticationPrincipal UserDetail userDetail,
             @PathVariable Integer questionId
     ) {
-        questionService.deleteQuestion(Long.parseLong(userDetail.getUserId()), questionId);
+        questionComplexService.deleteQuestion(Long.parseLong(userDetail.getUserId()), questionId);
         return ResponseUtility.success(null, "문제가 삭제되었습니다.");
     }
 }
