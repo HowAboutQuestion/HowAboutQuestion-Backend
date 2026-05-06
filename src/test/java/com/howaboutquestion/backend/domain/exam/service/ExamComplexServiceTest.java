@@ -6,14 +6,23 @@ import com.howaboutquestion.backend.domain.book.service.BookComplexService;
 import com.howaboutquestion.backend.domain.dailyhistory.entity.DailyHistoryEntity;
 import com.howaboutquestion.backend.domain.dailyhistory.service.DailyHistoryService;
 import com.howaboutquestion.backend.domain.exam.dto.mapper.ExamMapper;
+import com.howaboutquestion.backend.domain.exam.dto.request.ExamAnswerItemRequest;
+import com.howaboutquestion.backend.domain.exam.dto.request.ExamAnswerSubmitRequest;
+import com.howaboutquestion.backend.domain.exam.dto.response.ExamResultItemResponse;
+import com.howaboutquestion.backend.domain.exam.dto.response.ExamResultResponse;
 import com.howaboutquestion.backend.domain.exam.dto.request.ExamStartRequest;
 import com.howaboutquestion.backend.domain.exam.dto.response.ExamStartQuestionResponse;
 import com.howaboutquestion.backend.domain.exam.dto.response.ExamStartResponse;
 import com.howaboutquestion.backend.domain.exam.entity.ExamEntity;
+import com.howaboutquestion.backend.domain.examresult.entity.ExamResultEntity;
+import com.howaboutquestion.backend.domain.examresult.entity.ExamMultiple;
+import com.howaboutquestion.backend.domain.examresult.entity.ExamSubjective;
+import com.howaboutquestion.backend.domain.examresult.service.ExamResultService;
 import com.howaboutquestion.backend.domain.question.entity.Level;
 import com.howaboutquestion.backend.domain.question.entity.MultipleAnswer;
 import com.howaboutquestion.backend.domain.question.entity.QuestionEntity;
 import com.howaboutquestion.backend.domain.question.entity.QuestionMultipleEntity;
+import com.howaboutquestion.backend.domain.question.entity.QuestionSubjectiveEntity;
 import com.howaboutquestion.backend.domain.question.entity.QuestionType;
 import com.howaboutquestion.backend.domain.question.service.QuestionService;
 import com.howaboutquestion.backend.domain.user.entity.UserEntity;
@@ -35,6 +44,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doAnswer;
 
 @ExtendWith(MockitoExtension.class)
 class ExamComplexServiceTest {
@@ -57,6 +67,9 @@ class ExamComplexServiceTest {
     @Mock
     private ExamMapper examMapper;
 
+    @Mock
+    private ExamResultService examResultService;
+
     @InjectMocks
     private ExamComplexService examComplexService;
 
@@ -66,7 +79,7 @@ class ExamComplexServiceTest {
         UserEntity user = createUserEntity();
         BookEntity book = createBookEntity(user);
         DailyHistoryEntity dailyHistory = createDailyHistory(user);
-        QuestionEntity question = createQuestion(book);
+        QuestionEntity question = createMultipleQuestion(book);
         ExamEntity exam = createExamEntity(book, dailyHistory);
         ExamStartQuestionResponse questionResponse = createExamStartQuestionResponse();
         ExamStartRequest request = ExamStartRequest.builder().bookId(10).build();
@@ -119,6 +132,95 @@ class ExamComplexServiceTest {
                 .isEqualTo(StatusCode.NO_USER_PERMISSION);
     }
 
+    @DisplayName("답안 제출과 결과 조회에 성공한다")
+    @Test
+    void submitAnswersReturnsExamResultResponse() {
+        UserEntity user = createUserEntity();
+        BookEntity book = createBookEntity(user);
+        DailyHistoryEntity dailyHistory = createDailyHistory(user);
+        ExamEntity exam = createExamEntity(book, dailyHistory);
+        QuestionMultipleEntity multipleQuestion = createMultipleQuestion(book);
+        QuestionSubjectiveEntity subjectiveQuestion = createSubjectiveQuestion(book);
+        ExamAnswerSubmitRequest request = ExamAnswerSubmitRequest.builder()
+                .answers(List.of(
+                        ExamAnswerItemRequest.builder()
+                                .questionId(30)
+                                .type(QuestionType.MULTIPLE)
+                                .multipleAnswer(MultipleAnswer.ONE)
+                                .build(),
+                        ExamAnswerItemRequest.builder()
+                                .questionId(31)
+                                .type(QuestionType.SUBJECTIVE)
+                                .subjectiveAnswer("정답")
+                                .build()
+                ))
+                .build();
+        ExamResultItemResponse multipleResultResponse = createExamResultItemResponse(200, QuestionType.MULTIPLE);
+        ExamResultItemResponse subjectiveResultResponse = createExamResultItemResponse(201, QuestionType.SUBJECTIVE);
+        ExamResultEntity multipleResult = createExamMultipleResult(exam);
+        ExamResultEntity subjectiveResult = createExamSubjectiveResult(exam);
+
+        given(examService.findExamById(100)).willReturn(exam);
+        given(questionService.getQuestions(10)).willReturn(List.of(multipleQuestion, subjectiveQuestion));
+        given(examResultService.hasSubmitted(100)).willReturn(false);
+        given(examResultService.getExamResults(100)).willReturn(List.of(multipleResult, subjectiveResult));
+        given(examMapper.mapToExamResultItemResponse(multipleResult)).willReturn(multipleResultResponse);
+        given(examMapper.mapToExamResultItemResponse(subjectiveResult)).willReturn(subjectiveResultResponse);
+        doAnswer(invocation -> {
+            exam.updateResult(invocation.getArgument(1), invocation.getArgument(2), invocation.getArgument(3));
+            return null;
+        }).when(examService).updateExamResult(exam, 2, 2, BigDecimal.valueOf(100).setScale(2));
+
+        ExamResultResponse response = examComplexService.submitAnswers(1L, 100, request);
+
+        assertThat(response.getExamId()).isEqualTo(100);
+        assertThat(response.getCorrectQuestion()).isEqualTo(2);
+        assertThat(response.getSolvedQuestion()).isEqualTo(2);
+        assertThat(response.getResults()).containsExactly(multipleResultResponse, subjectiveResultResponse);
+    }
+
+    @DisplayName("이미 제출된 시험은 재제출을 거부한다")
+    @Test
+    void submitAnswersThrowsWhenAlreadySubmitted() {
+        UserEntity user = createUserEntity();
+        BookEntity book = createBookEntity(user);
+        DailyHistoryEntity dailyHistory = createDailyHistory(user);
+        ExamEntity exam = createExamEntity(book, dailyHistory);
+        ExamAnswerSubmitRequest request = ExamAnswerSubmitRequest.builder()
+                .answers(List.of(
+                        ExamAnswerItemRequest.builder()
+                                .questionId(30)
+                                .type(QuestionType.MULTIPLE)
+                                .multipleAnswer(MultipleAnswer.ONE)
+                                .build()
+                ))
+                .build();
+
+        given(examService.findExamById(100)).willReturn(exam);
+        given(examResultService.hasSubmitted(100)).willReturn(true);
+
+        assertThatThrownBy(() -> examComplexService.submitAnswers(1L, 100, request))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(StatusCode.INVALID_PARAMETER);
+    }
+
+    @DisplayName("타인의 시험 결과 조회는 권한 예외를 반환한다")
+    @Test
+    void getExamResultThrowsWhenNotOwner() {
+        UserEntity otherUser = createUserEntity();
+        otherUser.setId(2);
+        DailyHistoryEntity otherHistory = createDailyHistory(otherUser);
+        ExamEntity otherExam = createExamEntity(createBookEntity(otherUser), otherHistory);
+
+        given(examService.findExamById(100)).willReturn(otherExam);
+
+        assertThatThrownBy(() -> examComplexService.getExamResult(1L, 100))
+                .isInstanceOf(CustomException.class)
+                .extracting("errorCode")
+                .isEqualTo(StatusCode.NO_USER_PERMISSION);
+    }
+
     private UserEntity createUserEntity() {
         UserEntity user = UserEntity.builder()
                 .email("user@example.com")
@@ -154,7 +256,7 @@ class ExamComplexServiceTest {
                 .build();
     }
 
-    private QuestionEntity createQuestion(BookEntity book) {
+    private QuestionMultipleEntity createMultipleQuestion(BookEntity book) {
         return QuestionMultipleEntity.builder()
                 .id(30)
                 .book(book)
@@ -171,6 +273,21 @@ class ExamComplexServiceTest {
                 .selectFour("4번")
                 .selectFive("5번")
                 .answer(MultipleAnswer.ONE)
+                .build();
+    }
+
+    private QuestionSubjectiveEntity createSubjectiveQuestion(BookEntity book) {
+        return QuestionSubjectiveEntity.builder()
+                .id(31)
+                .book(book)
+                .title("주관식 문제")
+                .description("설명")
+                .picture("image2.png")
+                .level(Level.ONE)
+                .type(QuestionType.SUBJECTIVE)
+                .createdAt(LocalDateTime.of(2026, 5, 6, 0, 0))
+                .updatedAt(LocalDateTime.of(2026, 5, 6, 1, 0))
+                .answer("정답")
                 .build();
     }
 
@@ -199,6 +316,50 @@ class ExamComplexServiceTest {
                 .selectThree("3번")
                 .selectFour("4번")
                 .selectFive("5번")
+                .build();
+    }
+
+    private ExamResultItemResponse createExamResultItemResponse(Integer examResultId, QuestionType type) {
+        return ExamResultItemResponse.builder()
+                .examResultId(examResultId)
+                .type(type)
+                .title(type == QuestionType.MULTIPLE ? "객관식 문제" : "주관식 문제")
+                .description("설명")
+                .picture(type == QuestionType.MULTIPLE ? "image.png" : "image2.png")
+                .checkCorrect(true)
+                .build();
+    }
+
+    private ExamResultEntity createExamMultipleResult(ExamEntity exam) {
+        return ExamMultiple.builder()
+                .id(200)
+                .type(QuestionType.MULTIPLE)
+                .title("객관식 문제")
+                .description("설명")
+                .picture("image.png")
+                .exam(exam)
+                .checkCorrect(true)
+                .tag(null)
+                .selectOne("1번")
+                .selectTwo("2번")
+                .selectThree("3번")
+                .selectFour("4번")
+                .selectFive("5번")
+                .answer(MultipleAnswer.ONE)
+                .build();
+    }
+
+    private ExamResultEntity createExamSubjectiveResult(ExamEntity exam) {
+        return ExamSubjective.builder()
+                .id(201)
+                .type(QuestionType.SUBJECTIVE)
+                .title("주관식 문제")
+                .description("설명")
+                .picture("image2.png")
+                .exam(exam)
+                .checkCorrect(true)
+                .tag(null)
+                .answer("정답")
                 .build();
     }
 }
