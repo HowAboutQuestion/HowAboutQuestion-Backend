@@ -26,6 +26,7 @@ import java.util.Set;
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
  * 26.04.30          eunchang             PostgreSQL 매핑 호환성 정리<br>
+ * 26.05.06          eunchang            문제 공통 수정 메서드 추가<br>
  */
 @Entity
 @Getter
@@ -80,5 +81,13 @@ public abstract class QuestionEntity {
     public void prePersist() {
         if (this.level == null) this.level = Level.ONE;
         if (this.type == null) this.type = QuestionType.MULTIPLE;
+    }
+
+    protected void updateCommonFields(String title, String description, String picture, Level level, QuestionType type) {
+        this.title = title;
+        this.description = description;
+        this.picture = picture;
+        this.level = level;
+        this.type = type;
     }
 }
