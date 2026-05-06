@@ -25,6 +25,7 @@ import java.util.Set;
  * -----------------------------------------------------------<br>
  * 25.07.24          khaelim1311         최초생성<br>
  * 26.04.30          eunchang             PostgreSQL 매핑 호환성 정리<br>
+ * 26.05.06          eunchang            문제집 수정 메서드 추가<br>
  */
 @Entity
 @Getter
@@ -73,4 +74,11 @@ public class BookEntity {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookTagEntity> tags = new HashSet<>();
+
+    public void updateBook(String title, String content, Visibility visibility, Boolean checkFavorite) {
+        this.title = title;
+        this.content = content;
+        this.visibility = visibility;
+        this.checkFavorite = checkFavorite;
+    }
 }
