@@ -17,9 +17,11 @@ import java.util.List;
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
  * 26.05.06          eunchang          히스토리 목록 조회 쿼리 추가<br>
+ * 26.05.06          eunchang          최근 시험 기록 조회 쿼리 추가<br>
  */
 @Repository
 public interface ExamRepository extends JpaRepository<ExamEntity, Integer> {
 
     List<ExamEntity> findAllByBookUserIdOrderByCreatedAtDesc(Integer userId);
+    List<ExamEntity> findTop5ByBookUserIdOrderByCreatedAtDesc(Integer userId);
 }

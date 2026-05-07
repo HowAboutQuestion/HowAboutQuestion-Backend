@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * packageName    : com.howaboutquestion.backend.domain.dailyhistory.service<br>
@@ -21,6 +22,7 @@ import java.time.LocalDate;
  * -----------------------------------------------------------<br>
  * 26.05.06          eunchang          최초 생성<br>
  * 26.05.06          eunchang          시험 결과 반영 메서드 추가<br>
+ * 26.05.06          eunchang          오늘 히스토리 조회 메서드 추가<br>
  */
 @Service
 @Transactional
@@ -42,5 +44,10 @@ public class DailyHistoryService {
 
     public void applyExamResult(DailyHistoryEntity dailyHistory, Integer correctQuestion, Integer solvedQuestion, BigDecimal rate) {
         dailyHistory.applyExamResult(correctQuestion, solvedQuestion, rate);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<DailyHistoryEntity> findTodayHistory(Long userId) {
+        return dailyHistoryRepository.findByUserIdAndDate(Math.toIntExact(userId), LocalDate.now());
     }
 }
