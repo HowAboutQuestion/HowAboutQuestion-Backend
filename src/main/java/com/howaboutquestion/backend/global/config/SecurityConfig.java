@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(jwtAuthenticationFilter.getAllowUrls()).permitAll()
-                        .requestMatchers(jwtAuthenticationFilter.getNotAllowUrls()).authenticated())
+                        .anyRequest().authenticated())
                 .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
