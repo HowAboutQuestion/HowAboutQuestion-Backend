@@ -1,0 +1,34 @@
+name: HowAboutQuestion Ddoby
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Let's move, Ddoby!
+        uses: actions/checkout@v4
+
+      - name: Inspect it, Ddoby!
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build it, Ddoby!
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build -x test
+
+      - name: Turn off Ddoby!
+        run: |
+          kill -9 $(lsof -t -i:8080) || true
+
+      - name: Wake up, Ddoby!
+        run: |
+          cd build/libs
+          nohup java -Xms256m -Xmx512m -jar HowAboutQuestion-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
