@@ -24,11 +24,6 @@ jobs:
           chmod +x gradlew
           ./gradlew clean build -x test
 
-      - name: Turn off Ddoby!
-        run: |
-          kill -9 $(lsof -t -i:8080) || true
-
       - name: Wake up, Ddoby!
         run: |
-          cd build/libs
-          setsid nohup java -Xms256m -Xmx512m -jar HowAboutQuestion-0.0.1-SNAPSHOT.jar > app.log 2>&1 < /dev/null &
+          sudo systemctl restart howaboutquestion
