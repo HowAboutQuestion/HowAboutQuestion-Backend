@@ -21,6 +21,8 @@ jobs:
 
       - name: Build it, Ddoby!
         run: |
+          cd /home/ubuntu/HowAboutQuestion-Backend
+          git pull origin dev
           chmod +x gradlew
           ./gradlew clean build -x test
 
